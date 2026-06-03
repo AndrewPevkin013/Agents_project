@@ -1,0 +1,8 @@
+{
+  "name": "RetrieverAgent",
+  "version": "1.0.0",
+  "description": "Retrieves data from a small in-memory knowledge base.",
+  "entrypoint": "main.py",
+  "class_name": "RetrieverAgent",
+  "tags": ["retrieval", "search", "knowledge"]
+}

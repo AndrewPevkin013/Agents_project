@@ -1,0 +1,8 @@
+{
+  "name": "AnalystAgent",
+  "version": "1.0.0",
+  "description": "Analyzes structured data and returns a concise conclusion.",
+  "entrypoint": "main.py",
+  "class_name": "AnalystAgent",
+  "tags": ["analysis", "reasoning", "summary"]
+}

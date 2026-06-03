@@ -1,0 +1,13 @@
+{
+    "type": "agent_call",
+    "agent": "AnalystAgent",
+    "payload": {
+        "task": "Make a short conclusion about the current architecture",
+        "context": {
+            "agents": [
+                "AnalystAgent",
+                "RetrieverAgent"
+            ]
+        }
+    }
+}
