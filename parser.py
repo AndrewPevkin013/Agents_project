@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 class Parser:
-    """Parser from the notebook: extracts JSON objects from raw text."""
+    """Парсер друга: вытаскивает JSON-объекты/массивы из сырого текста."""
 
     def __init__(self, output_dir: str = "parsed_command") -> None:
         self.output_dir = Path(output_dir)

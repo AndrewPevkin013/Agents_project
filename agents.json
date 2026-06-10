@@ -3,20 +3,45 @@
     {
       "name": "BackendAgent",
       "description": "Backend development agent",
-      "system_prompt": "Ты backend-агент. Ты отвечаешь за API, базы данных и серверную архитектуру.",
-      "tags": ["backend", "api", "database"]
+      "system_prompt": "Ты backend-агент. Отвечаешь за API, базы данных, сервисы и бизнес-логику.",
+      "tags": [
+        "backend",
+        "api",
+        "database",
+        "server"
+      ]
     },
     {
       "name": "DevOpsAgent",
       "description": "DevOps and infrastructure agent",
-      "system_prompt": "Ты DevOps-агент. Ты отвечаешь за Docker, CI/CD, деплой и инфраструктуру.",
-      "tags": ["devops", "docker", "ci", "deploy"]
+      "system_prompt": "Ты DevOps-агент. Отвечаешь за Docker, CI/CD, деплой, инфраструктуру и окружения.",
+      "tags": [
+        "devops",
+        "docker",
+        "ci",
+        "cd",
+        "deploy",
+        "infrastructure"
+      ]
     },
     {
       "name": "TesterAgent",
-      "description": "Testing and QA agent",
-      "system_prompt": "Ты QA-агент. Ты отвечаешь за тестирование, баги, тест-кейсы и качество.",
-      "tags": ["testing", "qa", "tests"]
+      "description": "QA and testing agent",
+      "system_prompt": "Ты QA-агент. Отвечаешь за тестирование, тест-кейсы, баги и качество.",
+      "tags": [
+        "testing",
+        "qa",
+        "tests",
+        "bugs"
+      ]
+    },
+    {
+      "name": "SecurityAgent",
+      "description": "Agent created from request: Создай агента SecurityAgent для анализа безопасности и уязвимостей",
+      "system_prompt": "Ты агент SecurityAgent. Твоя роль сформирована из запроса пользователя: Создай агента SecurityAgent для анализа безопасности и уязвимостей",
+      "tags": [
+        "security"
+      ]
     }
   ]
 }
