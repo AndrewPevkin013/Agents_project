@@ -23,6 +23,14 @@ class CommandRouter:
         for path in sorted(Path(command_dir).glob("command_*.json")):
             results.append({"file": path.name, "response": self.route_file(path)})
         return results
+    
+    def route_by_agent_name(self, agent_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+        command = {
+            "type": "agent_call",
+            "agent": agent_name,
+            "payload": payload
+        }
+        return self.route(command)
 
     @staticmethod
     def from_angle_command(text: str) -> Dict[str, Any]:

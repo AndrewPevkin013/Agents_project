@@ -1,0 +1,22 @@
+{
+  "agents": [
+    {
+      "name": "BackendAgent",
+      "description": "Backend development agent",
+      "system_prompt": "Ты backend-агент. Ты отвечаешь за API, базы данных и серверную архитектуру.",
+      "tags": ["backend", "api", "database"]
+    },
+    {
+      "name": "DevOpsAgent",
+      "description": "DevOps and infrastructure agent",
+      "system_prompt": "Ты DevOps-агент. Ты отвечаешь за Docker, CI/CD, деплой и инфраструктуру.",
+      "tags": ["devops", "docker", "ci", "deploy"]
+    },
+    {
+      "name": "TesterAgent",
+      "description": "Testing and QA agent",
+      "system_prompt": "Ты QA-агент. Ты отвечаешь за тестирование, баги, тест-кейсы и качество.",
+      "tags": ["testing", "qa", "tests"]
+    }
+  ]
+}
