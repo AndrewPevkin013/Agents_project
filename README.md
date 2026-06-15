@@ -1,33 +1,54 @@
-# Agent System MVP
+# Multi-Agent MVP
 
-Minimal plugin engine for JSON-based multi-agent execution.
+MVP без реальных LLM-моделей.
 
-## Run
+## Запуск через консоль
 
 ```bash
 python main.py
 ```
 
-## Test
+## Запуск сервиса с UI
 
 ```bash
-pip install pytest
-pytest -q
+pip install -r requirements.txt
+python -m uvicorn api_server:app --reload
 ```
 
-## Add a new agent
-
-Create folder:
+Открыть:
 
 ```text
-agents/new_agent/
-    agent.json
-    main.py
+http://127.0.0.1:8000/
 ```
 
-`main.py` must contain a class from `agent.json.class_name` and implement:
+## Ручные ссылки
 
-```python
-def run(self, payload: dict) -> dict:
-    ...
+Добавить агента:
+
+```text
+http://127.0.0.1:8000/link/add/SecurityAgent?role=Ты security-agent&tags=security,api
+```
+
+Запустить агента:
+
+```text
+http://127.0.0.1:8000/link/run/SecurityAgent?prompt=Проверь API авторизации
+```
+
+Удалить агента:
+
+```text
+http://127.0.0.1:8000/link/delete/SecurityAgent
+```
+
+Handler:
+
+```text
+http://127.0.0.1:8000/link/handler?request=Создай агента SecurityAgent для безопасности
+```
+
+## Тесты
+
+```bash
+pytest -q
 ```

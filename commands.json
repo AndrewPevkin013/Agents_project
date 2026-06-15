@@ -1,0 +1,104 @@
+{
+  "commands": [
+    {
+      "name": "extract",
+      "command": {
+        "action": "extract",
+        "agents": [],
+        "prompts": {}
+      },
+      "functionality": "Get information from one or more agents by sending prompts and receiving answers",
+      "example": "What does BackendAgent know about API? / Узнай у агента про API"
+    },
+    {
+      "name": "create_agent",
+      "command": {
+        "action": "create_agent",
+        "agent": "",
+        "system_prompt": "",
+        "description": "",
+        "tags": []
+      },
+      "functionality": "Create a new specialized agent with a role prompt",
+      "example": "Create SecurityAgent / Создай агента безопасности"
+    },
+    {
+      "name": "delete_agent",
+      "command": {
+        "action": "delete_agent",
+        "agent": ""
+      },
+      "functionality": "Remove an agent from registry",
+      "example": "Delete TesterAgent / Удали агента"
+    },
+    {
+      "name": "list_agents",
+      "command": {
+        "action": "list_agents"
+      },
+      "functionality": "Show all available agents",
+      "example": "What agents are in the system? / Какие агенты есть?"
+    },
+    {
+      "name": "add",
+      "command": {
+        "action": "add",
+        "agent": "",
+        "data": {}
+      },
+      "functionality": "Add new data or knowledge to an agent",
+      "example": "Save this report to BackendAgent / Добавь знание агенту"
+    },
+    {
+      "name": "delete",
+      "command": {
+        "action": "delete",
+        "agent": "",
+        "target": ""
+      },
+      "functionality": "Delete data or entry from an agent",
+      "example": "Remove outdated data from DevOpsAgent / Удали устаревшие данные"
+    },
+    {
+      "name": "edit",
+      "command": {
+        "action": "edit",
+        "agent": "",
+        "target": "",
+        "data": {}
+      },
+      "functionality": "Modify or update existing data inside an agent",
+      "example": "Update record in BackendAgent / Измени запись в агенте"
+    },
+    {
+      "name": "load",
+      "command": {
+        "action": "load",
+        "agent": "",
+        "file_path": ""
+      },
+      "functionality": "Load a file into an agent for processing",
+      "example": "Load report.pdf into DevOpsAgent / Загрузи файл в агента"
+    },
+    {
+      "name": "consolidate",
+      "command": {
+        "action": "consolidate",
+        "source_agents": [],
+        "target_agent": ""
+      },
+      "functionality": "Merge two or more agents into one new agent and remove originals",
+      "example": "Merge BackendAgent and DevOpsAgent into PlatformAgent"
+    },
+    {
+      "name": "split",
+      "command": {
+        "action": "split",
+        "source_agent": "",
+        "target_agents": []
+      },
+      "functionality": "Split one agent into two specialized agents and remove original",
+      "example": "Split FullstackAgent into BackendAgent and FrontendAgent"
+    }
+  ]
+}

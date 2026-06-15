@@ -1,0 +1,40 @@
+{
+  "agents": [
+    {
+      "name": "BackendAgent",
+      "type": "llm",
+      "description": "Backend development agent",
+      "system_prompt": "Ты backend-агент. Отвечаешь за API, базы данных, сервисы и бизнес-логику.",
+      "tags": [
+        "backend",
+        "api",
+        "database",
+        "server"
+      ],
+      "model_name": "Mistral-7B",
+      "model_path": "D:\\bogdanov\\PyProjects\\Agents_project\\Models\\Mistral-7B",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "AnalystAgent",
+      "type": "llm",
+      "description": "Analyst agent",
+      "system_prompt": "Ты аналитический агент. Анализируй задачи и отвечай кратко.",
+      "tags": [
+        "analysis",
+        "summary"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "D:\\bogdanov\\PyProjects\\Agents_project\\Models\\Qwen2.5-3B-Instruct",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    }
+  ]
+}

@@ -2,92 +2,61 @@ import json
 from pathlib import Path
 
 from engine.agent_executor import AgentExecutor
-from engine.agent_loader import AgentLoader
 from engine.agent_registry import AgentRegistry
 from engine.command_router import CommandRouter
-from parser import Parser
+from engine.command_store import CommandStore
+from engine.handler import create_handler
 
 
 BASE_DIR = Path(__file__).resolve().parent
-AGENTS_DIR = BASE_DIR / "agents"
-COMMANDS_DIR = BASE_DIR / "parsed_command"
+
+AGENTS_CONFIG = BASE_DIR / "agents.json"
+COMMANDS_CONFIG = BASE_DIR / "commands.json"
+CORE_CONFIG = BASE_DIR / "core_config.json"
+MODELS_DIR = BASE_DIR / "Models"
 
 
-def build_router() -> CommandRouter:
-    registry = AgentRegistry()
-    AgentLoader(AGENTS_DIR).load_all(registry)
+def build_router(use_llm_handler: bool = True) -> CommandRouter:
+    registry = AgentRegistry(
+        config_path=AGENTS_CONFIG,
+        models_dir=MODELS_DIR
+    )
+    registry.load()
 
-    print("Loaded agents:", registry.list_agents())
+    command_store = CommandStore(COMMANDS_CONFIG)
+    command_store.load()
 
     executor = AgentExecutor(registry)
-    return CommandRouter(executor)
 
-
-def demo_manual_json_command(router: CommandRouter) -> None:
-    command = {
-        "type": "agent_call",
-        "agent": "AnalystAgent",
-        "payload": {
-            "task": "Analyze parser and engine integration",
-            "context": {
-                "parser": "friend_json_parser",
-                "engine": "plugin_agent_engine"
-            }
-        }
-    }
-
-    result = router.route(command)
-    print("\nManual command result:")
-    print(json.dumps(result, ensure_ascii=False, indent=4))
-
-
-def demo_friend_parser(router: CommandRouter) -> None:
-    raw_llm_output = """
-    Some garbage before JSON.
-
-    {
-        "type": "agent_call",
-        "agent": "RetrieverAgent",
-        "payload": {
-            "query": "What does parser do?"
-        }
-    }
-
-    Text between commands.
-
-    {
-        "type": "agent_call",
-        "agent": "AnalystAgent",
-        "payload": {
-            "task": "Make a short conclusion about the current architecture",
-            "context": {
-                "agents": ["AnalystAgent", "RetrieverAgent"]
-            }
-        }
-    }
-    """
-
-    parser = Parser(output_dir=str(COMMANDS_DIR))
-    count = parser.parse(raw_llm_output)
-    print(f"\nParser saved {count} JSON commands")
-
-    results = router.route_directory(COMMANDS_DIR)
-    print("\nParsed command results:")
-    print(json.dumps(results, ensure_ascii=False, indent=4))
-
-
-def demo_angle_command(router: CommandRouter) -> None:
-    command = CommandRouter.from_angle_command(
-        "<AnalystAgent, Explain how the agent engine works>"
+    handler = create_handler(
+        registry=registry,
+        command_store=command_store,
+        core_config_path=CORE_CONFIG,
+        use_llm=use_llm_handler
     )
-    result = router.route(command)
 
-    print("\nAngle command result:")
-    print(json.dumps(result, ensure_ascii=False, indent=4))
+    print("Loaded agents:", registry.list_agents())
+    print("Handler:", type(handler).__name__)
+
+    return CommandRouter(executor, handler)
+
+
+def main() -> None:
+    router = build_router(use_llm_handler=False)
+
+    print("\n--- Direct run by name ---")
+    result = router.route_by_agent_name(
+        "BackendAgent",
+        {"prompt": "Спроектируй REST API для системы задач"}
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+    print("\n--- Handler request: create mock agent ---")
+    result = router.handle_user_request(
+        "Создай агента SecurityAgent для анализа безопасности"
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
-    router = build_router()
-    demo_manual_json_command(router)
-    demo_friend_parser(router)
-    demo_angle_command(router)
+    main()
