@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 class Parser:
-    """Парсер друга: вытаскивает JSON-объекты/массивы из сырого текста."""
     def __init__(self, output_dir: str = "parsed_command") -> None:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
