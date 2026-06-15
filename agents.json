@@ -2,6 +2,7 @@
   "agents": [
     {
       "name": "BackendAgent",
+      "type": "mock",
       "description": "Backend development agent",
       "system_prompt": "Ты backend-агент. Отвечаешь за API, базы данных, сервисы и бизнес-логику.",
       "tags": [
@@ -13,6 +14,7 @@
     },
     {
       "name": "DevOpsAgent",
+      "type": "mock",
       "description": "DevOps and infrastructure agent",
       "system_prompt": "Ты DevOps-агент. Отвечаешь за Docker, CI/CD, деплой, инфраструктуру и окружения.",
       "tags": [
@@ -26,6 +28,7 @@
     },
     {
       "name": "TesterAgent",
+      "type": "mock",
       "description": "QA and testing agent",
       "system_prompt": "Ты QA-агент. Отвечаешь за тестирование, тест-кейсы, баги и качество.",
       "tags": [
@@ -37,6 +40,7 @@
     },
     {
       "name": "SecurityAgent",
+      "type": "mock",
       "description": "Agent created from request: Создай агента SecurityAgent для анализа безопасности и уязвимостей",
       "system_prompt": "Ты агент SecurityAgent. Твоя роль сформирована из запроса пользователя: Создай агента SecurityAgent для анализа безопасности и уязвимостей",
       "tags": [

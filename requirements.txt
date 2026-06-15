@@ -1,4 +1,10 @@
 fastapi
 uvicorn
 pydantic
+transformers
+accelerate
+torch
+safetensors
+sentencepiece
+protobuf
 pytest

@@ -1,54 +1,37 @@
-# Multi-Agent MVP
+# Multi-Agent MVP integrated update
 
-MVP без реальных LLM-моделей.
-
-## Запуск через консоль
+Run console demo:
 
 ```bash
 python main.py
 ```
 
-## Запуск сервиса с UI
+Run server without reload when using local LLMs:
 
 ```bash
-pip install -r requirements.txt
-python -m uvicorn api_server:app --reload
+python -m uvicorn api_server:app
 ```
 
-Открыть:
+Open:
 
 ```text
 http://127.0.0.1:8000/
 ```
 
-## Ручные ссылки
-
-Добавить агента:
+Handler create LLM agent example:
 
 ```text
-http://127.0.0.1:8000/link/add/SecurityAgent?role=Ты security-agent&tags=security,api
+Создай агента AnalystAgent на модели Qwen2.5-3B-Instruct. Роль: аналитический агент для анализа архитектуры проекта. Теги: analysis, summary.
 ```
 
-Запустить агента:
+Manual link:
 
 ```text
-http://127.0.0.1:8000/link/run/SecurityAgent?prompt=Проверь API авторизации
+http://127.0.0.1:8000/link/add/AnalystAgent?type=llm&model=Qwen2.5-3B-Instruct&role=Ты аналитический агент&tags=analysis,summary
 ```
 
-Удалить агента:
+Route document:
 
 ```text
-http://127.0.0.1:8000/link/delete/SecurityAgent
-```
-
-Handler:
-
-```text
-http://127.0.0.1:8000/link/handler?request=Создай агента SecurityAgent для безопасности
-```
-
-## Тесты
-
-```bash
-pytest -q
+http://127.0.0.1:8000/link/route_document?file_path=docs/api_report.txt&document_text=REST API auth database
 ```
