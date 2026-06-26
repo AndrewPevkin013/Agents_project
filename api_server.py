@@ -9,12 +9,14 @@ from engine.agent_executor import AgentExecutor
 from engine.agent_registry import AgentRegistry
 from engine.command_router import CommandRouter
 from engine.command_store import CommandStore
-from engine.handler import RuleBasedHandler
+from engine.handler import create_handler
 
 
 BASE_DIR = Path(__file__).resolve().parent
 AGENTS_CONFIG = BASE_DIR / "agents.json"
 COMMANDS_CONFIG = BASE_DIR / "commands.json"
+CORE_CONFIG = BASE_DIR / "core_config.json"
+MODELS_DIR = BASE_DIR / "Models"
 
 
 class AgentRequest(BaseModel):
@@ -36,14 +38,20 @@ class HandlerRequest(BaseModel):
 app = FastAPI(title="Multi-Agent MVP")
 
 
-registry = AgentRegistry(AGENTS_CONFIG)
+registry = AgentRegistry(config_path=AGENTS_CONFIG, models_dir=MODELS_DIR)
 registry.load()
 
 command_store = CommandStore(COMMANDS_CONFIG)
 command_store.load()
 
 executor = AgentExecutor(registry)
-handler = RuleBasedHandler(registry, command_store)
+handler = create_handler(
+    registry=registry,
+    command_store=command_store,
+    core_config_path=CORE_CONFIG,
+    use_llm=True
+)
+print("HANDLER TYPE:", type(handler).__name__)
 router = CommandRouter(executor, handler)
 
 

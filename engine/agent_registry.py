@@ -4,12 +4,13 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from engine.agent import MockAgent
+from engine.agent import LLMAgent, MockAgent
 
 
 class AgentRegistry:
-    def __init__(self, config_path: str | Path) -> None:
+    def __init__(self, config_path: str | Path, models_dir: str | Path) -> None:
         self.config_path = Path(config_path)
+        self.models_dir = Path(models_dir)
         self._agents: Dict[str, Dict[str, Any]] = {}
 
     def load(self) -> None:
@@ -19,9 +20,15 @@ class AgentRegistry:
                 encoding="utf-8"
             )
 
-        config = json.loads(self.config_path.read_text(encoding="utf-8"))
+        raw = self.config_path.read_text(encoding="utf-8").strip()
+        if not raw:
+            raw = json.dumps({"agents": []}, ensure_ascii=False, indent=2)
+            self.config_path.write_text(raw, encoding="utf-8")
+
+        config = json.loads(raw)
 
         self._agents.clear()
+
         for metadata in config.get("agents", []):
             self.register_from_metadata(metadata, persist=False)
 
@@ -32,43 +39,111 @@ class AgentRegistry:
                 for item in self._agents.values()
             ]
         }
+
         self.config_path.write_text(
             json.dumps(data, ensure_ascii=False, indent=2),
             encoding="utf-8"
         )
 
-    def register_from_metadata(self, metadata: Dict[str, Any], persist: bool = True) -> None:
-        name = metadata.get("name")
+    def _normalize_metadata(self, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        name = metadata.get("name") or metadata.get("agent")
         if not name:
-            raise ValueError("Agent metadata must contain 'name'")
+            raise ValueError("Agent metadata must contain 'name' or 'agent'")
 
-        if name in self._agents:
-            raise ValueError(f"Agent already exists: {name}")
+        agent_type = metadata.get("type", "mock") or "mock"
 
-        normalized = {
+        normalized: Dict[str, Any] = {
             "name": name,
+            "type": agent_type,
             "description": metadata.get("description", ""),
             "system_prompt": metadata.get("system_prompt", ""),
             "tags": list(metadata.get("tags", [])),
         }
 
+        if agent_type == "llm":
+            model_name = metadata.get("model_name") or ""
+            model_path = metadata.get("model_path") or ""
+
+            if not model_path:
+                if not model_name:
+                    raise ValueError("LLM agent must contain 'model_name' or 'model_path'")
+                model_path = self.models_dir / model_name
+
+            model_path = Path(model_path)
+
+            if not model_path.exists():
+                raise FileNotFoundError(f"Model folder not found: {model_path}")
+
+            normalized["model_name"] = model_name or model_path.name
+            normalized["model_path"] = str(model_path)
+            normalized["generation"] = metadata.get(
+                "generation",
+                {
+                    "max_new_tokens": 256,
+                    "temperature": 0.7,
+                    "do_sample": True
+                }
+            )
+            normalized["device"] = metadata.get("device", "auto")
+            normalized["torch_dtype"] = metadata.get("torch_dtype", "float16")
+
+        return normalized
+
+    def _create_instance(self, metadata: Dict[str, Any]) -> Any:
+        agent_type = metadata.get("type", "mock")
+
+        if agent_type == "mock":
+            return MockAgent(metadata)
+
+        if agent_type == "llm":
+            return LLMAgent(metadata)
+
+        raise ValueError(f"Unsupported agent type: {agent_type}")
+
+    def register_from_metadata(self, metadata: Dict[str, Any], persist: bool = True) -> None:
+        normalized = self._normalize_metadata(metadata)
+        name = normalized["name"]
+
+        if name in self._agents:
+            raise ValueError(f"Agent already exists: {name}")
+
         self._agents[name] = {
-            "instance": MockAgent(normalized),
-            "metadata": normalized,
+            "instance": self._create_instance(normalized),
+            "metadata": normalized
         }
 
         if persist:
             self.save()
 
     def upsert_from_metadata(self, metadata: Dict[str, Any]) -> None:
-        name = metadata.get("name")
-        if not name:
-            raise ValueError("Agent metadata must contain 'name'")
+        normalized = self._normalize_metadata(metadata)
+        name = normalized["name"]
 
         if name in self._agents:
             self.unregister(name, persist=False)
 
-        self.register_from_metadata(metadata, persist=True)
+        self._agents[name] = {
+            "instance": self._create_instance(normalized),
+            "metadata": normalized
+        }
+
+        self.save()
+
+    def update_metadata(self, name: str, updates: Dict[str, Any]) -> Dict[str, Any]:
+        old = self.get_metadata(name)
+
+        filtered = {
+            key: value
+            for key, value in updates.items()
+            if value not in (None, "")
+        }
+
+        self.upsert_from_metadata({
+            **old,
+            **filtered
+        })
+
+        return self.get_metadata(name)
 
     def unregister(self, name: str, persist: bool = True) -> None:
         if name not in self._agents:
@@ -79,7 +154,7 @@ class AgentRegistry:
         if persist:
             self.save()
 
-    def get(self, name: str) -> MockAgent:
+    def get(self, name: str) -> Any:
         if name not in self._agents:
             available = ", ".join(self._agents.keys()) or "none"
             raise ValueError(f"Agent not found: {name}. Available agents: {available}")
@@ -89,6 +164,7 @@ class AgentRegistry:
     def get_metadata(self, name: str) -> Dict[str, Any]:
         if name not in self._agents:
             raise ValueError(f"Agent not found: {name}")
+
         return self._agents[name]["metadata"]
 
     def list_agents(self) -> List[str]:
@@ -98,6 +174,11 @@ class AgentRegistry:
         return {
             name: data["metadata"]
             for name, data in self._agents.items()
+        }
+
+    def as_prompt_registry(self) -> Dict[str, List[Dict[str, Any]]]:
+        return {
+            "agents": list(self.snapshot().values())
         }
 
     def select_agent(self, task: str) -> Optional[str]:
@@ -110,6 +191,7 @@ class AgentRegistry:
 
         for name, data in self._agents.items():
             metadata = data["metadata"]
+
             searchable = " ".join([
                 name,
                 metadata.get("description", ""),
@@ -117,10 +199,11 @@ class AgentRegistry:
                 " ".join(metadata.get("tags", [])),
             ]).lower()
 
-            score = 0
-            for word in task_lower.split():
-                if word in searchable:
-                    score += 1
+            score = sum(
+                1
+                for word in task_lower.split()
+                if word in searchable
+            )
 
             if score > best_score:
                 best_score = score
