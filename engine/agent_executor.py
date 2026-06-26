@@ -1,14 +1,33 @@
 from __future__ import annotations
+
+import time
 from typing import Any, Dict, List
+
 from engine.agent_registry import AgentRegistry
 from engine.document_router import DocumentRouter
 from engine.system_logger import SystemLogger
+from engine.document_loader import DocumentLoader
+from engine.metrics_logger import MetricsLogger
 
 class AgentExecutor:
-    def __init__(self, registry: AgentRegistry, document_router: DocumentRouter | None = None, system_logger: SystemLogger | None = None) -> None:
+    def __init__(
+    self,
+    registry: AgentRegistry,
+    document_router: DocumentRouter | None = None,
+    system_logger: SystemLogger | None = None,
+    document_loader: DocumentLoader | None = None,
+    metrics_logger: MetricsLogger | None = None,
+    ) -> None:
         self.registry = registry
+
+        self.metrics_logger = metrics_logger or MetricsLogger("logs")
+        self.document_loader = document_loader or DocumentLoader("server_storage/documents")
+
         self.document_router = document_router or DocumentRouter(registry)
-        self.system_logger = system_logger or SystemLogger(registry)
+        self.system_logger = system_logger or SystemLogger(
+            registry=registry,
+            logs_dir="logs",
+            metrics_logger=self.metrics_logger)
 
     def execute(self, command: Dict[str, Any]) -> Dict[str, Any]:
         if "type" in command and command.get("type") == "agent_call":
@@ -16,7 +35,7 @@ class AgentExecutor:
         action = command.get("action")
         if not action:
             raise ValueError("Command must contain 'action' or legacy 'type'")
-        handlers = {"extract": self._extract, "create_agent": self._create_agent, "delete_agent": self._delete_agent, "remove": self._delete_agent, "edit_agent": self._edit_agent, "cancel": self._cancel, "list_agents": self._list_agents, "add": self._add, "delete": self._delete_data, "edit": self._edit, "load": self._load, "route_document": self._route_document, "resolve_logger_conflicts": self._resolve_logger_conflicts, "consolidate": self._consolidate, "split": self._split, "no_action": self._no_action}
+        handlers = {"extract": self._extract, "create_agent": self._create_agent, "delete_agent": self._delete_agent, "save_system_state": self._save_system_state, "remove": self._delete_agent, "edit_agent": self._edit_agent, "cancel": self._cancel, "list_agents": self._list_agents, "add": self._add, "delete": self._delete_data, "edit": self._edit, "load": self._load, "route_document": self._route_document, "resolve_logger_conflicts": self._resolve_logger_conflicts, "consolidate": self._consolidate, "split": self._split, "no_action": self._no_action}
         if action not in handlers:
             raise ValueError(f"Unsupported action: {action}")
         return handlers[action](command)
@@ -27,17 +46,31 @@ class AgentExecutor:
     def _execute_legacy_command(self, command: Dict[str, Any]) -> Dict[str, Any]:
         agent_name = command.get("agent")
         payload = command.get("payload", {})
+
         if not agent_name:
             raise ValueError("Command must contain 'agent'")
+
         if not isinstance(payload, dict):
             raise TypeError("Command payload must be a JSON object")
-        return self.registry.get(agent_name).run(payload)
+
+        prompt = payload.get("prompt") or payload.get("task") or payload.get("query") or ""
+        return self._run_agent_with_metrics(agent_name, prompt)
 
     def _extract(self, command: Dict[str, Any]) -> Dict[str, Any]:
         agents = command.get("agents", [])
         prompts = command.get("prompts", {})
-        answers = {agent_name: self.registry.get(agent_name).run({"prompt": prompts.get(agent_name, "")}) for agent_name in agents}
-        return {"action": "extract", "agents": agents, "answers": answers}
+
+        answers = {}
+
+        for agent_name in agents:
+            prompt = prompts.get(agent_name, "")
+            answers[agent_name] = self._run_agent_with_metrics(agent_name, prompt)
+
+        return {
+            "action": "extract",
+            "agents": agents,
+            "answers": answers
+        }
 
     def _create_agent(self, command: Dict[str, Any]) -> Dict[str, Any]:
         metadata = {"name": command["agent"], "type": command.get("type", "mock"), "description": command.get("description", ""), "system_prompt": command.get("system_prompt", ""), "tags": command.get("tags", []), "model_name": command.get("model_name", ""), "model_path": command.get("model_path", ""), "generation": command.get("generation", {"max_new_tokens": 256, "temperature": 0.7, "do_sample": True}), "device": command.get("device", "auto"), "torch_dtype": command.get("torch_dtype", "float16")}
@@ -65,8 +98,36 @@ class AgentExecutor:
         return {"action": "delete", **self.registry.get(command["agent"]).delete_data(command.get("target", ""))}
     def _edit(self, command: Dict[str, Any]) -> Dict[str, Any]:
         return {"action": "edit", **self.registry.get(command["agent"]).edit_data(command.get("target", ""), command.get("data", {}))}
+    
     def _load(self, command: Dict[str, Any]) -> Dict[str, Any]:
-        return {"action": "load", **self.registry.get(command["agent"]).load_file(command.get("file_path", ""))}
+        agent_name = command["agent"]
+        file_path = command.get("file_path", "")
+
+        loaded_document = self.document_loader.load(
+            file_path=file_path,
+            agent_name=agent_name
+        )
+
+        agent = self.registry.get(agent_name)
+
+        result = agent.add_data({
+            "id": loaded_document["id"],
+            "type": "loaded_document",
+            "file_path": file_path,
+            "saved_path": loaded_document["saved_path"],
+            "chunks_count": loaded_document["chunks_count"],
+            "chars": loaded_document["chars"],
+        })
+
+        return {
+            "action": "load",
+            "status": "ok",
+            "agent": agent_name,
+            "file_path": file_path,
+            "document": loaded_document,
+            "agent_memory_result": result
+        }
+    
     def _route_document(self, command: Dict[str, Any]) -> Dict[str, Any]:
         generated = self.document_router.process_document(command.get("file_path", ""), command.get("document_text", ""), command.get("threshold", 1))
         return {"action": "route_document", "status": "ok", "generated_commands": generated, "results": self.execute_many(generated)}
@@ -100,3 +161,37 @@ class AgentExecutor:
         return {"action": "split", "status": "ok", "created": created, "removed": source_agent}
     def _no_action(self, command: Dict[str, Any]) -> Dict[str, Any]:
         return {"action": "no_action", "status": "ok", "reason": command.get("reason", "")}
+
+    def _run_agent_with_metrics(self, agent_name: str, prompt: str) -> Dict[str, Any]:
+        agent = self.registry.get(agent_name)
+
+        started = time.perf_counter()
+
+        response = agent.run({
+            "prompt": prompt
+        })
+
+        elapsed = time.perf_counter() - started
+
+        self.metrics_logger.log_request(
+            agent_name=agent_name,
+            prompt=prompt,
+            response=response,
+            elapsed_seconds=elapsed
+        )
+
+        return response
+    
+    def _save_system_state(self, command: Dict[str, Any]) -> Dict[str, Any]:
+        metrics = self.system_logger.save_state_report()
+
+        return {
+            "action": "save_system_state",
+            "status": "ok",
+            "saved_to": {
+                "txt": str(self.system_logger.state_log_path),
+                "json": str(self.system_logger.state_json_path),
+                "metrics": str(self.metrics_logger.summary_path),
+            },
+            "metrics": metrics
+        }

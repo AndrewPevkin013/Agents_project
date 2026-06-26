@@ -93,3 +93,13 @@ def link_handler(request: str): return router.handle_user_request(request)
 def link_route_document(file_path: str, document_text: str = "", threshold: int = 1): return router.route({"action":"route_document","file_path":file_path,"document_text":document_text,"threshold":threshold})
 @app.get("/link/logger/resolve")
 def link_logger_resolve(): return router.route({"action":"resolve_logger_conflicts"})
+@app.get("/logs/state")
+def logs_state():
+    return router.route({
+        "action": "save_system_state"
+    })
+
+
+@app.get("/logs/metrics")
+def logs_metrics():
+    return executor.metrics_logger.build_summary()

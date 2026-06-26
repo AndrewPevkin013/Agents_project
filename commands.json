@@ -65,10 +65,18 @@
     },
     {
       "name": "load",
-      "command": {"action": "load", "agent": "", "file_path": ""},
-      "functionality": "Load a file into a selected agent for processing",
-      "example": "Load report.pdf into DevOpsAgent / Загрузи файл в агента",
-      "usage_example": {"action": "load", "agent": "DevOpsAgent", "file_path": "docs/report.pdf"}
+      "command": {
+        "action": "load",
+        "agent": "",
+        "file_path": ""
+      },
+      "functionality": "Load a document through Loader pipeline and attach it to selected agent memory",
+      "example": "Load docs/api_design.txt into BackendAgent / Загрузи документ в BackendAgent",
+      "usage_example": {
+        "action": "load",
+        "agent": "BackendAgent",
+        "file_path": "docs/api_design.txt"
+      }
     },
     {
       "name": "route_document",
@@ -104,6 +112,17 @@
       "functionality": "Do nothing when no system change is required",
       "example": "No conflicts found / Нет действий",
       "usage_example": {"action": "no_action", "reason": "No conflicts detected"}
+    },
+    {
+      "name": "save_system_state",
+      "command": {
+        "action": "save_system_state"
+      },
+      "functionality": "Save current system state, agent registry, conflicts and runtime metrics to server log files",
+      "example": "Save system state / Сохрани состояние системы",
+      "usage_example": {
+        "action": "save_system_state"
+      }
     }
   ]
 }
