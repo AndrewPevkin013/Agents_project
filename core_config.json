@@ -4,6 +4,7 @@
     "model_path": "D:/bogdanov/PyProjects/Agents_project/Models/Qwen2.5-3B-Instruct",
     "device": "cpu",
     "torch_dtype": "float32",
+    "system_prompt": "Ты главный Handler мультиагентной системы. Твоя задача — анализировать запрос пользователя, выбирать нужных агентов, создавать команды и делегировать задачи.",
     "generation": {
       "max_new_tokens": 256,
       "temperature": 0.2,
