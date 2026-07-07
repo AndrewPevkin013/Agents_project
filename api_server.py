@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import Any, Dict, List
 from fastapi import FastAPI
+from fastapi import UploadFile, File, Form
+import shutil
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from engine.agent_executor import AgentExecutor
@@ -14,6 +16,8 @@ AGENTS_CONFIG = BASE_DIR / "agents.json"
 COMMANDS_CONFIG = BASE_DIR / "commands.json"
 CORE_CONFIG = BASE_DIR / "core_config.json"
 MODELS_DIR = BASE_DIR / "Models"
+UPLOADS_DIR = BASE_DIR / "server_storage" / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 class AgentRequest(BaseModel):
     prompt: str
@@ -99,6 +103,24 @@ def logs_state():
         "action": "save_system_state"
     })
 
+@app.post("/documents/upload")
+def upload_document(
+    file: UploadFile = File(...),
+    document_text: str = Form(""),
+    threshold: int = Form(1)
+):
+    safe_name = Path(file.filename).name
+    saved_path = UPLOADS_DIR / safe_name
+
+    with saved_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return router.route({
+        "action": "route_document",
+        "file_path": str(saved_path),
+        "document_text": document_text,
+        "threshold": threshold
+    })
 
 @app.get("/logs/metrics")
 def logs_metrics():

@@ -8,3 +8,4 @@ safetensors
 sentencepiece
 protobuf
 pytest
+python-multipart
