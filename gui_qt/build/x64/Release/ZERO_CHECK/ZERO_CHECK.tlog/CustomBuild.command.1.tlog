@@ -1,0 +1,10 @@
+^D:\PROGRAMMING\PYCHARMPROJECTS\AGENTS_PROJECT\GUI_QT\BUILD\CMAKEFILES\687336A6140CF5FB9BF86BDF3A339476\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/PycharmProjects/Agents_project/gui_qt -BD:/Programming/PycharmProjects/Agents_project/gui_qt/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Programming/PycharmProjects/Agents_project/gui_qt/build/MultiAgentChat.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
