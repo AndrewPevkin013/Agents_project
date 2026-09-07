@@ -20,7 +20,7 @@ import torch
 
 class AnalystAgent:
     def __init__(self):
-        self.model_path = r"D:\bogdanov\PyProjects\Agent_system1\Models\agent_analyst"
+        self.model_path = r"D:/Programming/PycharmProjects/Agents_project/agents/analyst_agent"
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_path,

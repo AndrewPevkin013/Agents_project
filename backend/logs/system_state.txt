@@ -1,0 +1,36 @@
+SYSTEM STATE REPORT
+
+Timestamp: 2026-06-26 12:29:31
+Agent count: 4
+
+AGENTS:
+- BackendAgent
+  type: mock
+  tags: ['backend', 'api', 'database', 'server']
+  system_prompt: Ты backend-агент. Отвечаешь за API, базы данных, сервисы и бизнес-логику.
+- DevOpsAgent
+  type: mock
+  tags: ['devops', 'docker', 'ci', 'cd', 'deploy', 'infrastructure']
+  system_prompt: Ты DevOps-агент. Отвечаешь за Docker, CI/CD, деплой, инфраструктуру и окружения.
+- TesterAgent
+  type: mock
+  tags: ['testing', 'qa', 'tests', 'bugs']
+  system_prompt: Ты QA-агент. Отвечаешь за тестирование, тест-кейсы, баги и качество.
+- SecurityAgent
+  type: mock
+  tags: ['security']
+  system_prompt: Ты агент SecurityAgent. Твоя роль сформирована из запроса пользователя: Создай агента SecurityAgent для анализа безопасности и уязвимостей
+
+CONFLICTS:
+Empty prompt agents: []
+Duplicate tag groups: {}
+
+RUNTIME METRICS:
+{
+  "requests_count": 0,
+  "total_tokens_est": 0,
+  "avg_tokens_per_request": 0,
+  "avg_response_time": 0,
+  "avg_prompt_length": 0,
+  "by_agent": {}
+}

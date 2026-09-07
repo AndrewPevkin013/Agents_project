@@ -1,0 +1,10 @@
+^D:\PROGRAMMING\PYCHARMPROJECTS\AGENTS_PROJECT\GUI\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/PycharmProjects/Agents_project/gui -BD:/Programming/PycharmProjects/Agents_project/gui/build --check-stamp-file D:/Programming/PycharmProjects/Agents_project/gui/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

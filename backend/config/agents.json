@@ -1,0 +1,42 @@
+{
+  "agents": [
+    {
+      "name": "SecurityAgent",
+      "type": "llm",
+      "description": "Анализ безопасности и поиск уязвимостей",
+      "system_prompt": "Ты security-агент. Отвечаешь за безопасность и уязвимости.",
+      "tags": [
+        "security",
+        "vulnerability"
+      ],
+      "model_name": "",
+      "model_path": "",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      },
+      "device": "auto",
+      "torch_dtype": "float16"
+    },
+    {
+      "name": "BackendAgent",
+      "type": "llm",
+      "description": "Agent specializing in backend development",
+      "system_prompt": "Ты backend-разработчик агент. Специализируешься на разработке серверной логики и API.",
+      "tags": [
+        "backend",
+        "development"
+      ],
+      "model_name": "",
+      "model_path": "",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      },
+      "device": "auto",
+      "torch_dtype": "float16"
+    }
+  ]
+}

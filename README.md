@@ -1,33 +1,37 @@
-# Agent System MVP
+# Multi-Agent MVP integrated update
 
-Minimal plugin engine for JSON-based multi-agent execution.
-
-## Run
+Run console demo:
 
 ```bash
 python main.py
 ```
 
-## Test
+Run server without reload when using local LLMs:
 
 ```bash
-pip install pytest
-pytest -q
+python -m uvicorn api_server:app
 ```
 
-## Add a new agent
-
-Create folder:
+Open:
 
 ```text
-agents/new_agent/
-    agent.json
-    main.py
+http://127.0.0.1:8000/
 ```
 
-`main.py` must contain a class from `agent.json.class_name` and implement:
+Handler create LLM agent example:
 
-```python
-def run(self, payload: dict) -> dict:
-    ...
+```text
+Создай агента AnalystAgent на модели Qwen2.5-3B-Instruct. Роль: аналитический агент для анализа архитектуры проекта. Теги: analysis, summary.
+```
+
+Manual link:
+
+```text
+http://127.0.0.1:8000/link/add/AnalystAgent?type=llm&model=Qwen2.5-3B-Instruct&role=Ты аналитический агент&tags=analysis,summary
+```
+
+Route document:
+
+```text
+http://127.0.0.1:8000/link/route_document?file_path=docs/api_report.txt&document_text=REST API auth database
 ```

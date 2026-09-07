@@ -1,93 +1,36 @@
 import json
 from pathlib import Path
-
 from engine.agent_executor import AgentExecutor
-from engine.agent_loader import AgentLoader
 from engine.agent_registry import AgentRegistry
 from engine.command_router import CommandRouter
-from parser import Parser
-
+from engine.command_store import CommandStore
+from engine.handler import create_handler
 
 BASE_DIR = Path(__file__).resolve().parent
-AGENTS_DIR = BASE_DIR / "agents"
-COMMANDS_DIR = BASE_DIR / "parsed_command"
+AGENTS_CONFIG = BASE_DIR / "agents.json"
+COMMANDS_CONFIG = BASE_DIR / "commands.json"
+CORE_CONFIG = BASE_DIR / "core_config.json"
+MODELS_DIR = BASE_DIR / "Models"
 
-
-def build_router() -> CommandRouter:
-    registry = AgentRegistry()
-    AgentLoader(AGENTS_DIR).load_all(registry)
-
-    print("Loaded agents:", registry.list_agents())
-
+def build_router(use_llm_handler: bool = False) -> CommandRouter:
+    registry = AgentRegistry(AGENTS_CONFIG, MODELS_DIR); registry.load()
+    command_store = CommandStore(COMMANDS_CONFIG); command_store.load()
     executor = AgentExecutor(registry)
-    return CommandRouter(executor)
+    handler = create_handler(registry, command_store, CORE_CONFIG, use_llm=use_llm_handler)
+    print("Loaded agents:", registry.list_agents()); print("Handler:", type(handler).__name__)
+    return CommandRouter(executor, handler)
 
-
-def demo_manual_json_command(router: CommandRouter) -> None:
-    command = {
-        "type": "agent_call",
-        "agent": "AnalystAgent",
-        "payload": {
-            "task": "Analyze parser and engine integration",
-            "context": {
-                "parser": "friend_json_parser",
-                "engine": "plugin_agent_engine"
-            }
-        }
-    }
-
-    result = router.route(command)
-    print("\nManual command result:")
-    print(json.dumps(result, ensure_ascii=False, indent=4))
-
-
-def demo_friend_parser(router: CommandRouter) -> None:
-    raw_llm_output = """
-    Some garbage before JSON.
-
-    {
-        "type": "agent_call",
-        "agent": "RetrieverAgent",
-        "payload": {
-            "query": "What does parser do?"
-        }
-    }
-
-    Text between commands.
-
-    {
-        "type": "agent_call",
-        "agent": "AnalystAgent",
-        "payload": {
-            "task": "Make a short conclusion about the current architecture",
-            "context": {
-                "agents": ["AnalystAgent", "RetrieverAgent"]
-            }
-        }
-    }
-    """
-
-    parser = Parser(output_dir=str(COMMANDS_DIR))
-    count = parser.parse(raw_llm_output)
-    print(f"\nParser saved {count} JSON commands")
-
-    results = router.route_directory(COMMANDS_DIR)
-    print("\nParsed command results:")
-    print(json.dumps(results, ensure_ascii=False, indent=4))
-
-
-def demo_angle_command(router: CommandRouter) -> None:
-    command = CommandRouter.from_angle_command(
-        "<AnalystAgent, Explain how the agent engine works>"
-    )
-    result = router.route(command)
-
-    print("\nAngle command result:")
-    print(json.dumps(result, ensure_ascii=False, indent=4))
-
+def main() -> None:
+    router = build_router(use_llm_handler=False)
+    for title, action in [
+        ("Direct run by name", lambda: router.route_by_agent_name("BackendAgent", {"prompt":"Спроектируй REST API для системы задач"})),
+        ("Handler system Q&A", lambda: router.handle_user_request("Какие агенты есть в системе?")),
+        ("Handler create agent", lambda: router.handle_user_request("Создай агента SecurityAgent для анализа безопасности и уязвимостей")),
+        ("Document routing", lambda: router.route({"action":"route_document","file_path":"docs/api_report.txt","document_text":"REST API authentication database endpoints","threshold":1})),
+        ("Logger conflict resolution", lambda: router.route({"action":"resolve_logger_conflicts"})),
+    ]:
+        print(f"\n--- {title} ---")
+        print(json.dumps(action(), ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
-    router = build_router()
-    demo_manual_json_command(router)
-    demo_friend_parser(router)
-    demo_angle_command(router)
+    main()

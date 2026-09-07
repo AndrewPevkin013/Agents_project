@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+transformers
+accelerate
+torch
+safetensors
+sentencepiece
+protobuf
+pytest
+python-multipart
+python-dotenv
+gigachat
+PyJWT

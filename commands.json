@@ -1,0 +1,128 @@
+{
+  "commands": [
+    {
+      "name": "extract",
+      "command": {"action": "extract", "agents": [], "prompts": {}},
+      "functionality": "Get information from one or more agents by sending prompts and receiving answers",
+      "example": "Ask BackendAgent to design API / Узнай у BackendAgent про API",
+      "usage_example": {"action": "extract", "agents": ["BackendAgent"], "prompts": {"BackendAgent": "Спроектируй REST API"}}
+    },
+    {
+      "name": "create_agent",
+      "command": {"action": "create_agent", "agent": "", "type": "mock", "model_name": "", "system_prompt": "", "description": "", "tags": []},
+      "functionality": "Create a new specialized agent. type can be mock or llm. For llm use model_name from Models folder",
+      "example": "Create SecurityAgent / Создай агента безопасности",
+      "usage_example": {"action": "create_agent", "agent": "SecurityAgent", "type": "mock", "description": "Security analysis agent", "system_prompt": "Ты security-агент. Отвечаешь за безопасность и уязвимости.", "tags": ["security", "api"]}
+    },
+    {
+      "name": "edit_agent",
+      "command": {"action": "edit_agent", "agent": "", "type": "", "model_name": "", "system_prompt": "", "description": "", "tags": []},
+      "functionality": "Edit existing agent metadata: type, model, role prompt, description and tags",
+      "example": "Edit SecurityAgent role / Измени роль SecurityAgent",
+      "usage_example": {"action": "edit_agent", "agent": "SecurityAgent", "description": "Updated security agent", "system_prompt": "Ты security-агент. Проводишь аудит API.", "tags": ["security", "audit"]}
+    },
+    {
+      "name": "delete_agent",
+      "command": {"action": "delete_agent", "agent": ""},
+      "functionality": "Remove an agent from registry",
+      "example": "Delete TesterAgent / Удали агента",
+      "usage_example": {"action": "delete_agent", "agent": "TesterAgent"}
+    },
+    {
+      "name": "cancel",
+      "command": {"action": "cancel", "reason": ""},
+      "functionality": "Cancel current requested operation without changing agents or data",
+      "example": "Cancel this operation / Отмени операцию",
+      "usage_example": {"action": "cancel", "reason": "User requested cancellation"}
+    },
+    {
+      "name": "list_agents",
+      "command": {"action": "list_agents"},
+      "functionality": "Show all available agents and their metadata",
+      "example": "What agents are in the system? / Какие агенты есть?",
+      "usage_example": {"action": "list_agents"}
+    },
+    {
+      "name": "add",
+      "command": {"action": "add", "agent": "", "data": {}},
+      "functionality": "Add new data or knowledge to an agent memory",
+      "example": "Save this report to BackendAgent / Добавь знание агенту",
+      "usage_example": {"action": "add", "agent": "BackendAgent", "data": {"text": "Important API note"}}
+    },
+    {
+      "name": "delete",
+      "command": {"action": "delete", "agent": "", "target": ""},
+      "functionality": "Delete data or memory entry from an agent",
+      "example": "Remove outdated data from DevOpsAgent / Удали устаревшие данные",
+      "usage_example": {"action": "delete", "agent": "DevOpsAgent", "target": "rec_123"}
+    },
+    {
+      "name": "edit",
+      "command": {"action": "edit", "agent": "", "target": "", "data": {}},
+      "functionality": "Modify or update existing data inside an agent",
+      "example": "Update record in BackendAgent / Измени запись в агенте",
+      "usage_example": {"action": "edit", "agent": "BackendAgent", "target": "rec_123", "data": {"status": "updated"}}
+    },
+    {
+      "name": "load",
+      "command": {
+        "action": "load",
+        "agent": "",
+        "file_path": ""
+      },
+      "functionality": "Load a document through Loader pipeline and attach it to selected agent memory",
+      "example": "Load docs/api_design.txt into BackendAgent / Загрузи документ в BackendAgent",
+      "usage_example": {
+        "action": "load",
+        "agent": "BackendAgent",
+        "file_path": "docs/api_design.txt"
+      }
+    },
+    {
+      "name": "route_document",
+      "command": {"action": "route_document", "file_path": "", "document_text": "", "threshold": 1},
+      "functionality": "Intelligently route document to the best existing agent or create a new specialized agent and load document into it",
+      "example": "Load docs/api_report.txt into the most suitable agent / Загрузи документ в подходящего агента",
+      "usage_example": {"action": "route_document", "file_path": "docs/api_report.txt", "threshold": 1}
+    },
+    {
+      "name": "resolve_logger_conflicts",
+      "command": {"action": "resolve_logger_conflicts"},
+      "functionality": "Analyze registry metrics and resolve logger conflicts through central self-organization process",
+      "example": "Resolve agent conflicts / Разреши конфликты логгера",
+      "usage_example": {"action": "resolve_logger_conflicts"}
+    },
+    {
+      "name": "consolidate",
+      "command": {"action": "consolidate", "source_agents": [], "target_agent": ""},
+      "functionality": "Merge two or more agents into one new agent and remove originals",
+      "example": "Merge BackendAgent and DevOpsAgent into PlatformAgent",
+      "usage_example": {"action": "consolidate", "source_agents": ["BackendAgent", "DevOpsAgent"], "target_agent": "PlatformAgent"}
+    },
+    {
+      "name": "split",
+      "command": {"action": "split", "source_agent": "", "target_agents": []},
+      "functionality": "Split one agent into two specialized agents and remove original",
+      "example": "Split FullstackAgent into BackendAgent and FrontendAgent",
+      "usage_example": {"action": "split", "source_agent": "FullstackAgent", "target_agents": ["BackendAgent", "FrontendAgent"]}
+    },
+    {
+      "name": "no_action",
+      "command": {"action": "no_action", "reason": ""},
+      "functionality": "Do nothing when no system change is required",
+      "example": "No conflicts found / Нет действий",
+      "usage_example": {"action": "no_action", "reason": "No conflicts detected"}
+    },
+    {
+      "name": "save_system_state",
+      "command": {
+        "action": "save_system_state"
+      },
+      "functionality": "Save current system state, agent registry, conflicts and runtime metrics to server log files",
+      "example": "Save system state / Сохрани состояние системы",
+      "usage_example": {
+        "action": "save_system_state"
+      }
+    }
+  ]
+}
