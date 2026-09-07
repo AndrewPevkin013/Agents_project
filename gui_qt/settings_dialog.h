@@ -3,7 +3,6 @@
 #include <QDialog>
 
 class ApiClient;
-class QComboBox;
 class QLineEdit;
 class QPlainTextEdit;
 
@@ -20,7 +19,6 @@ private:
     QLineEdit *m_serverUrl = nullptr;
 
     QLineEdit *m_agentName = nullptr;
-    QComboBox *m_agentType = nullptr;
     QLineEdit *m_modelName = nullptr;
     QLineEdit *m_agentTags = nullptr;
     QPlainTextEdit *m_agentPrompt = nullptr;

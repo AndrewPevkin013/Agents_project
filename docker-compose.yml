@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-auth_db}
+      POSTGRES_USER: ${POSTGRES_USER:-auth_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-auth_password}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-auth_user} -d ${POSTGRES_DB:-auth_db}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  auth-service:
+    build:
+      context: ./auth_service
+      dockerfile: Dockerfile
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      DATABASE_URL: >-
+        postgresql+asyncpg://${POSTGRES_USER:-auth_user}:${POSTGRES_PASSWORD:-auth_password}@postgres:5432/${POSTGRES_DB:-auth_db}
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8080"
+    
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health').read()"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./models:/project/models
+      - ./backend/config:/project/backend/config
+      - ./backend/logs:/project/backend/logs
+      - ./backend/server_storage:/project/backend/server_storage
+
+    depends_on:
+      auth-service:
+        condition: service_healthy
+
+
+volumes:
+  auth_postgres_data:

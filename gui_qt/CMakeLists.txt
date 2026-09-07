@@ -12,15 +12,35 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
 
-add_executable(MultiAgentChat
+set(SOURCES
     main.cpp
+
     api_client.h
     api_client.cpp
+
+    auth_client.h
+    auth_client.cpp
+
+    login_dialog.h
+    login_dialog.cpp
+
+    register_dialog.h
+    register_dialog.cpp
+
     main_window.h
     main_window.cpp
+
     settings_dialog.h
     settings_dialog.cpp
 )
+
+if (WIN32)
+    add_executable(MultiAgentChat WIN32 ${SOURCES})
+elseif (APPLE)
+    add_executable(MultiAgentChat MACOSX_BUNDLE ${SOURCES})
+else()
+    add_executable(MultiAgentChat ${SOURCES})
+endif()
 
 target_link_libraries(MultiAgentChat PRIVATE
     Qt${QT_VERSION_MAJOR}::Core

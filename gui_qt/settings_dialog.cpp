@@ -1,6 +1,5 @@
 #include "settings_dialog.h"
 
-#include <QComboBox>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -122,9 +121,6 @@ void SettingsDialog::buildInterface()
     m_agentName = new QLineEdit(agentPage);
     m_agentName->setPlaceholderText("DevOpsAgent");
 
-    m_agentType = new QComboBox(agentPage);
-    m_agentType->addItems({"mock", "llm"});
-
     m_modelName = new QLineEdit(agentPage);
     m_modelName->setPlaceholderText("Qwen2.5-3B-Instruct");
 
@@ -137,7 +133,6 @@ void SettingsDialog::buildInterface()
     m_agentPrompt->setMinimumHeight(150);
 
     agentForm->addRow("Name:", m_agentName);
-    agentForm->addRow("Type:", m_agentType);
     agentForm->addRow("Model folder:", m_modelName);
     agentForm->addRow("Tags:", m_agentTags);
     agentForm->addRow("System prompt:", m_agentPrompt);
@@ -198,7 +193,6 @@ void SettingsDialog::createAgent()
 {
     m_api->createAgent(
         m_agentName->text(),
-        m_agentType->currentText(),
         m_modelName->text(),
         m_agentPrompt->toPlainText(),
         m_agentTags->text().split(',', Qt::SkipEmptyParts));

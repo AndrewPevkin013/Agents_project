@@ -30,6 +30,25 @@ QString ApiClient::baseUrl() const
     return m_baseUrl;
 }
 
+void ApiClient::setAccessToken(const QString &token)
+{
+    m_accessToken = token;
+}
+
+QString ApiClient::accessToken() const
+{
+    return m_accessToken;
+}
+
+void ApiClient::applyAuthorization(QNetworkRequest &request) const
+{
+    if (!m_accessToken.isEmpty()) {
+        request.setRawHeader(
+            "Authorization",
+            ("Bearer " + m_accessToken).toUtf8());
+    }
+}
+
 void ApiClient::emitJsonResponse(
     const QString &title,
     const QByteArray &data,
@@ -56,6 +75,7 @@ void ApiClient::emitJsonResponse(
 void ApiClient::get(const QString &path, const QString &title)
 {
     QNetworkRequest request(QUrl(m_baseUrl + path));
+    applyAuthorization(request);
     QNetworkReply *reply = m_network.get(request);
 
     connect(reply, &QNetworkReply::finished, this, [this, reply, title]() {
@@ -76,6 +96,7 @@ void ApiClient::postJson(
 {
     QNetworkRequest request(QUrl(m_baseUrl + path));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    applyAuthorization(request);
 
     QNetworkReply *reply =
         m_network.post(request, QJsonDocument(body).toJson(QJsonDocument::Compact));
@@ -94,6 +115,7 @@ void ApiClient::postJson(
 void ApiClient::deleteRequest(const QString &path, const QString &title)
 {
     QNetworkRequest request(QUrl(m_baseUrl + path));
+    applyAuthorization(request);
     QNetworkReply *reply = m_network.deleteResource(request);
 
     connect(reply, &QNetworkReply::finished, this, [this, reply, title]() {
@@ -127,14 +149,15 @@ void ApiClient::runAgent(const QString &agentName, const QString &prompt)
 
 void ApiClient::createAgent(
     const QString &name,
-    const QString &type,
     const QString &modelName,
     const QString &systemPrompt,
     const QStringList &tags)
 {
     QJsonArray tagArray;
+
     for (const QString &tag : tags) {
         const QString value = tag.trimmed();
+
         if (!value.isEmpty()) {
             tagArray.append(value);
         }
@@ -142,14 +165,16 @@ void ApiClient::createAgent(
 
     const QJsonObject body{
         {"name", name.trimmed()},
-        {"type", type.trimmed()},
         {"model_name", modelName.trimmed()},
         {"description", systemPrompt.trimmed()},
         {"system_prompt", systemPrompt.trimmed()},
         {"tags", tagArray}
     };
 
-    postJson("/agents", body, "Create Agent");
+    postJson(
+        "/agents",
+        body,
+        "Create Agent");
 }
 
 void ApiClient::deleteAgent(const QString &agentName)
@@ -198,6 +223,7 @@ void ApiClient::uploadDocument(const QString &filePath)
     multiPart->append(filePart);
 
     QNetworkRequest request(QUrl(m_baseUrl + "/documents/upload"));
+    applyAuthorization(request);
     QNetworkReply *reply = m_network.post(request, multiPart);
     multiPart->setParent(reply);
 

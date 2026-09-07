@@ -9,3 +9,6 @@ sentencepiece
 protobuf
 pytest
 python-multipart
+python-dotenv
+gigachat
+PyJWT

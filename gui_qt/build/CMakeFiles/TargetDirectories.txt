@@ -1,3 +1,0 @@
-D:/Programming/PycharmProjects/Agents_project/gui_qt/build/CMakeFiles/MultiAgentChat.dir
-D:/Programming/PycharmProjects/Agents_project/gui_qt/build/CMakeFiles/ALL_BUILD.dir
-D:/Programming/PycharmProjects/Agents_project/gui_qt/build/CMakeFiles/ZERO_CHECK.dir

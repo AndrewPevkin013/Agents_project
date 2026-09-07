@@ -23,15 +23,22 @@ class MainWindow final : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(
+        const QString &username,
+        const QString &accessToken,
+        QWidget *parent = nullptr);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
+signals:
+    void logoutRequested();
+
 private:
     ApiClient m_api;
+    QString m_username;
 
     QListWidget *m_agentList = nullptr;
     QTextEdit *m_chatDisplay = nullptr;

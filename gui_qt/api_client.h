@@ -5,6 +5,8 @@
 #include <QNetworkAccessManager>
 #include <QStringList>
 
+class QNetworkRequest;
+
 class ApiClient final : public QObject
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ public:
 
     void setBaseUrl(const QString &url);
     [[nodiscard]] QString baseUrl() const;
+    void setAccessToken(const QString &token);
+    [[nodiscard]] QString accessToken() const;
 
     void getAgents();
     void sendHandlerRequest(const QString &request);
@@ -21,7 +25,6 @@ public:
 
     void createAgent(
         const QString &name,
-        const QString &type,
         const QString &modelName,
         const QString &systemPrompt,
         const QStringList &tags);
@@ -41,11 +44,13 @@ signals:
 
 private:
     QString m_baseUrl = "http://127.0.0.1:8000";
+    QString m_accessToken;
     QNetworkAccessManager m_network;
 
     void get(const QString &path, const QString &title);
     void postJson(const QString &path, const QJsonObject &body, const QString &title);
     void deleteRequest(const QString &path, const QString &title);
+    void applyAuthorization(QNetworkRequest &request) const;
     void emitJsonResponse(
         const QString &title,
         const QByteArray &data,

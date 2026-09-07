@@ -56,9 +56,14 @@ QString valueToText(const QJsonValue &value)
 }
 }
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(
+    const QString &username,
+    const QString &accessToken,
+    QWidget *parent)
     : QMainWindow(parent)
+    , m_username(username)
 {
+    m_api.setAccessToken(accessToken);
     setWindowTitle("Multi-Agent Chat");
     setMinimumSize(1100, 720);
     setAcceptDrops(true);
@@ -285,7 +290,6 @@ QWidget *MainWindow::buildSidebar()
     subtitle->setStyleSheet("color:#85858e;");
 
     auto *newChatButton = new QPushButton("+  New chat", sidebar);
-    auto *settingsButton = new QPushButton("Settings", sidebar);
     auto *refreshButton = new QPushButton("Refresh agents", sidebar);
 
     auto *section = new QLabel("AGENTS", sidebar);
@@ -305,7 +309,6 @@ QWidget *MainWindow::buildSidebar()
     layout->addWidget(section);
     layout->addWidget(m_agentList, 1);
     layout->addWidget(refreshButton);
-    layout->addWidget(settingsButton);
 
     connect(
         m_agentList,
@@ -317,9 +320,6 @@ QWidget *MainWindow::buildSidebar()
         m_chatDisplay->clear();
         addSystemMessage("Новый чат начат. Контекст интерфейса очищен.");
     });
-
-    connect(settingsButton, &QPushButton::clicked,
-            this, &MainWindow::openSettings);
 
     connect(refreshButton, &QPushButton::clicked,
             &m_api, &ApiClient::getAgents);
@@ -352,15 +352,27 @@ QWidget *MainWindow::buildTopBar()
         new QLabel("API  " + m_api.baseUrl(), topBar);
     m_connectionLabel->setObjectName("connectionLabel");
 
-    auto *settingsButton = new QPushButton("Settings", topBar);
+    auto *userLabel = new QLabel(m_username, topBar);
+    userLabel->setStyleSheet(
+        "color:#d6d6da; padding:5px 8px;");
+
+    auto *settingsButton =
+        new QPushButton("Settings", topBar);
+    auto *logoutButton =
+        new QPushButton("Logout", topBar);
 
     layout->addLayout(titleBox);
     layout->addStretch();
     layout->addWidget(m_connectionLabel);
+    layout->addWidget(userLabel);
     layout->addWidget(settingsButton);
+    layout->addWidget(logoutButton);
 
     connect(settingsButton, &QPushButton::clicked,
             this, &MainWindow::openSettings);
+
+    connect(logoutButton, &QPushButton::clicked,
+            this, &MainWindow::logoutRequested);
 
     return topBar;
 }
