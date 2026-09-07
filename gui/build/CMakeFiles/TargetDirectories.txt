@@ -1,4 +1,0 @@
-D:/Programming/PycharmProjects/Agents_project/gui/build/CMakeFiles/gui.dir
-D:/Programming/PycharmProjects/Agents_project/gui/build/CMakeFiles/INSTALL.dir
-D:/Programming/PycharmProjects/Agents_project/gui/build/CMakeFiles/ALL_BUILD.dir
-D:/Programming/PycharmProjects/Agents_project/gui/build/CMakeFiles/ZERO_CHECK.dir

@@ -1,7 +1,0 @@
-{
-    "type": "agent_call",
-    "agent": "RetrieverAgent",
-    "payload": {
-        "query": "What does parser do?"
-    }
-}
