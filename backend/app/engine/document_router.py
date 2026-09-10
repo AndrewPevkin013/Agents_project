@@ -1,72 +1,93 @@
 from __future__ import annotations
-import re
+
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
+
 from app.engine.agent_registry import AgentRegistry
+from app.routing.semantic_router import SemanticAgentRouter
+
 
 class DocumentRouter:
-    def __init__(self, registry: AgentRegistry) -> None:
+    """
+    Orchestration layer between document upload and semantic routing.
+
+    Old keyword matching and automatic mock-agent creation were removed.
+
+    Stage 1 behavior:
+      - suitable existing agent -> generate `load`
+      - no suitable agent -> generate `no_action`
+
+    Stage 2 will replace the NO_AGENT branch with:
+      LLM summary -> LLM registry check -> optional create_agent.
+    """
+
+    def __init__(
+        self,
+        registry: AgentRegistry,
+        semantic_router: SemanticAgentRouter | None = None,
+    ) -> None:
         self.registry = registry
+        self.semantic_router = (
+            semantic_router
+            or SemanticAgentRouter(
+                registry=registry,
+                learn=False,
+            )
+        )
 
     @staticmethod
     def read_document(file_path: str) -> str:
         path = Path(file_path)
+
         if not path.exists():
             return ""
-        if path.suffix.lower() in {".txt", ".md", ".json", ".py", ".csv"}:
-            return path.read_text(encoding="utf-8", errors="ignore")
+
+        if path.suffix.lower() in {
+            ".txt",
+            ".md",
+            ".json",
+            ".py",
+            ".csv",
+        }:
+            return path.read_text(
+                encoding="utf-8",
+                errors="ignore",
+            )
+
+        # PDF/DOCX parsing is a separate next step.
+        # Returning only the filename preserves current behavior.
         return path.name
 
-    @staticmethod
-    def _tokens(text: str) -> set[str]:
-        return set(re.findall(r"\w+", text.lower()))
+    def process_document(
+        self,
+        file_path: str,
+        document_text: str = "",
+        threshold: int = 1,
+    ) -> List[Dict[str, Any]]:
+        del threshold  # compatibility with the existing API
 
-    @staticmethod
-    def extract_topic(file_path: str, document_text: str = "") -> str:
-        combined = f"{Path(file_path).stem} {document_text}".lower()
-        mapping = {
-            "backend": ["backend", "api", "server", "database", "auth", "rest", "endpoint"],
-            "devops": ["devops", "docker", "deploy", "ci", "cd", "kubernetes", "infra"],
-            "testing": ["test", "testing", "qa", "bug", "pytest", "coverage"],
-            "security": ["security", "auth", "vulnerability", "token", "jwt", "audit"],
-            "frontend": ["frontend", "ui", "react", "page", "component"],
-        }
-        best_topic, best_score = "document", 0
-        for topic, words in mapping.items():
-            score = sum(1 for word in words if word in combined)
-            if score > best_score:
-                best_topic, best_score = topic, score
-        if best_score > 0:
-            return best_topic
-        tokens = list(DocumentRouter._tokens(combined))
-        return tokens[0] if tokens else "document"
-
-    def match_topic_to_agents(self, topic: str, document_text: str = "") -> Tuple[str | None, int]:
-        query_tokens = self._tokens(topic + " " + document_text)
-        best_agent, best_score = None, -1
-        for name, metadata in self.registry.snapshot().items():
-            agent_text = " ".join([name, metadata.get("description", ""), metadata.get("system_prompt", ""), " ".join(metadata.get("tags", []))])
-            score = len(query_tokens & self._tokens(agent_text))
-            if score > best_score:
-                best_agent, best_score = name, score
-        return best_agent, best_score
-
-    @staticmethod
-    def generate_new_agent_name(topic: str) -> str:
-        clean = re.sub(r"[^a-zA-Z0-9_]", "", topic.title()) or "Document"
-        return clean + "Agent"
-
-    def process_document(self, file_path: str, document_text: str = "", threshold: int = 1) -> List[Dict[str, Any]]:
         if not document_text:
             document_text = self.read_document(file_path)
-        topic = self.extract_topic(file_path, document_text)
-        best_agent, score = self.match_topic_to_agents(topic, document_text)
-        if best_agent and score >= threshold:
-            return [{"action": "load", "agent": best_agent, "file_path": file_path}]
-        new_agent = self.generate_new_agent_name(topic)
-        if new_agent in self.registry.list_agents():
-            new_agent = "DocumentAgent"
+
+        decision = self.semantic_router.route(
+            document_text
+        )
+
+        if decision.matched:
+            return [
+                {
+                    "action": "load",
+                    "agent": decision.agent,
+                    "file_path": file_path,
+                    "routing": decision.to_dict(),
+                }
+            ]
+
         return [
-            {"action": "create_agent", "agent": new_agent, "type": "mock", "description": f"Agent created for documents about {topic}", "system_prompt": f"Ты агент для обработки документов по теме: {topic}.", "tags": [topic, "document"]},
-            {"action": "load", "agent": new_agent, "file_path": file_path},
+            {
+                "action": "no_action",
+                "reason": "no_suitable_agent",
+                "routing": decision.to_dict(),
+                "file_path": file_path,
+            }
         ]
