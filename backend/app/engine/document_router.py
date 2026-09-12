@@ -3,30 +3,34 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List
 
+from app.documents.processor import DocumentProcessor
 from app.engine.agent_registry import AgentRegistry
 from app.routing.semantic_router import SemanticAgentRouter
 
 
 class DocumentRouter:
     """
-    Orchestration layer between document upload and semantic routing.
+    Orchestration layer between upload preprocessing and semantic agent routing.
 
-    Old keyword matching and automatic mock-agent creation were removed.
+    Pipeline:
+        uploaded file
+        -> DocumentProcessor
+        -> normalized routing text
+        -> SemanticAgentRouter (BGE-M3)
+        -> load existing agent OR no_action
 
-    Stage 1 behavior:
-      - suitable existing agent -> generate `load`
-      - no suitable agent -> generate `no_action`
-
-    Stage 2 will replace the NO_AGENT branch with:
-      LLM summary -> LLM registry check -> optional create_agent.
+    Images and engineering PDFs are first transformed by DrawingAnalyzer into
+    RAG-oriented text plus structured metadata/diagram information.
     """
 
     def __init__(
         self,
         registry: AgentRegistry,
         semantic_router: SemanticAgentRouter | None = None,
+        document_processor: DocumentProcessor | None = None,
     ) -> None:
         self.registry = registry
+
         self.semantic_router = (
             semantic_router
             or SemanticAgentRouter(
@@ -35,28 +39,19 @@ class DocumentRouter:
             )
         )
 
-    @staticmethod
-    def read_document(file_path: str) -> str:
-        path = Path(file_path)
+        project_dir = (
+            Path(__file__).resolve().parents[3]
+        )
 
-        if not path.exists():
-            return ""
-
-        if path.suffix.lower() in {
-            ".txt",
-            ".md",
-            ".json",
-            ".py",
-            ".csv",
-        }:
-            return path.read_text(
-                encoding="utf-8",
-                errors="ignore",
+        self.document_processor = (
+            document_processor
+            or DocumentProcessor(
+                project_dir
+                / "backend"
+                / "server_storage"
+                / "processed"
             )
-
-        # PDF/DOCX parsing is a separate next step.
-        # Returning only the filename preserves current behavior.
-        return path.name
+        )
 
     def process_document(
         self,
@@ -64,14 +59,58 @@ class DocumentRouter:
         document_text: str = "",
         threshold: int = 1,
     ) -> List[Dict[str, Any]]:
-        del threshold  # compatibility with the existing API
+        del threshold  # compatibility with existing API
 
-        if not document_text:
-            document_text = self.read_document(file_path)
+        processed = (
+            self.document_processor.process(
+                file_path=file_path,
+                document_text=document_text,
+            )
+        )
+
+        normalized_path = (
+            self.document_processor
+            .save_normalized(processed)
+        )
+
+        routing_text = (
+            processed.routing_text()
+        )
+
+        if not routing_text.strip():
+            return [
+                {
+                    "action": "no_action",
+                    "reason":
+                        "empty_processed_document",
+                    "file_path":
+                        file_path,
+                    "document_processing": {
+                        "kind":
+                            processed.kind,
+                        "normalized_path":
+                            normalized_path,
+                        "artifacts":
+                            processed.artifacts,
+                    },
+                }
+            ]
 
         decision = self.semantic_router.route(
-            document_text
+            routing_text
         )
+
+        processing_info = {
+            "kind": processed.kind,
+            "normalized_path":
+                normalized_path,
+            "tags": processed.tags,
+            "metadata":
+                processed.metadata,
+            "diagram": processed.diagram,
+            "artifacts":
+                processed.artifacts,
+        }
 
         if decision.matched:
             return [
@@ -79,15 +118,23 @@ class DocumentRouter:
                     "action": "load",
                     "agent": decision.agent,
                     "file_path": file_path,
-                    "routing": decision.to_dict(),
+                    "routing":
+                        decision.to_dict(),
+                    "document_processing":
+                        processing_info,
                 }
             ]
 
         return [
             {
                 "action": "no_action",
-                "reason": "no_suitable_agent",
-                "routing": decision.to_dict(),
-                "file_path": file_path,
+                "reason":
+                    "no_suitable_agent",
+                "routing":
+                    decision.to_dict(),
+                "file_path":
+                    file_path,
+                "document_processing":
+                    processing_info,
             }
         ]

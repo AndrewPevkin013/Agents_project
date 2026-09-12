@@ -13,3 +13,10 @@ python-dotenv
 gigachat
 PyJWT
 sentence-transformers
+opencv-python
+numpy
+pillow
+rapidocr-onnxruntime
+pymupdf
+easyocr
+open_clip_torch

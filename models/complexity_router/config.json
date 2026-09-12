@@ -1,0 +1,19 @@
+{
+  "base_model": "intfloat/multilingual-e5-base",
+  "query_prefix": "query: ",
+  "max_len": 64,
+  "pooling": "mean",
+  "hidden": 768,
+  "head": {
+    "hid": 256,
+    "dropout": 0.2,
+    "n_classes": 3
+  },
+  "labels": {
+    "1": "simple_direct",
+    "2": "chain_of_thought",
+    "3": "tree_of_thought"
+  },
+  "val_acc": 0.9888888888888889,
+  "val_macro_f1": 0.988888545942776
+}

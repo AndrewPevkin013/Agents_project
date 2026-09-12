@@ -1,0 +1,15 @@
+{
+  "default_model": "",
+  "preferred_models": [
+    "Qwen2.5-3B-Instruct",
+    "Qwen2.5-7B-Instruct",
+    "Mistral-7B"
+  ],
+  "excluded_directories": [
+    "complexity_router",
+    "bge-m3",
+    "bge-reranker-v2-m3",
+    "routing"
+  ],
+  "scan_depth": 2
+}
