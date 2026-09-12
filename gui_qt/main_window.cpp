@@ -114,60 +114,62 @@ void MainWindow::applyWindowStyle()
 {
     setStyleSheet(R"(
         QMainWindow {
-            background: #09090c;
+            background: #F7FAFA;
+        }
+
+        QWidget {
+            color: #243434;
         }
 
         QWidget#sidebar {
             background: qlineargradient(
-                x1:0, y1:0, x2:1, y2:1,
-                stop:0 #0d0d12,
-                stop:0.55 #151116,
-                stop:1 #251014);
-            border-right: 1px solid #382126;
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #F3FAF9,
+                stop:1 #ECF6F5);
+            border-right: 1px solid #D9E7E5;
         }
 
         QWidget#chatArea {
             background: qlineargradient(
                 x1:0, y1:0, x2:0, y2:1,
-                stop:0 #101014,
-                stop:0.55 #0d0d11,
-                stop:1 #150d10);
+                stop:0 #FFFFFF,
+                stop:1 #F7FAFA);
         }
 
         QWidget#topBar {
-            background: rgba(17, 17, 22, 235);
-            border-bottom: 1px solid #2e2024;
+            background: rgba(255, 255, 255, 245);
+            border-bottom: 1px solid #DDE9E7;
         }
 
         QLabel#brand {
-            color: #f4f4f5;
+            color: #163C3A;
             font-size: 20px;
             font-weight: 700;
         }
 
         QLabel#sectionLabel {
-            color: #8f8f98;
+            color: #819391;
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 1px;
         }
 
         QLabel#targetLabel {
-            color: #f0f0f2;
+            color: #203B3A;
             font-size: 16px;
             font-weight: 650;
         }
 
         QLabel#connectionLabel {
-            color: #bd7d84;
-            background: #23161a;
-            border: 1px solid #4a252b;
+            color: #067D79;
+            background: #E6F7F5;
+            border: 1px solid #B9E6E2;
             border-radius: 9px;
             padding: 5px 10px;
         }
 
         QListWidget {
-            color: #d9d9dd;
+            color: #344947;
             background: transparent;
             border: none;
             outline: none;
@@ -182,92 +184,100 @@ void MainWindow::applyWindowStyle()
         }
 
         QListWidget::item:hover {
-            background: #25191d;
+            background: #E3F3F1;
         }
 
         QListWidget::item:selected {
-            color: white;
+            color: #075E5B;
             background: qlineargradient(
                 x1:0, y1:0, x2:1, y2:0,
-                stop:0 #6f1c25,
-                stop:1 #34151a);
-            border-left: 3px solid #d04450;
+                stop:0 #D2F1EE,
+                stop:1 #E8F8F6);
+            border-left: 3px solid #0ABAB5;
         }
 
         QTextEdit#chatDisplay {
-            color: #e7e7e9;
+            color: #243434;
             background: transparent;
             border: none;
             padding: 24px 11%;
-            selection-background-color: #8f2933;
+            selection-background-color: #B7EAE6;
         }
 
         QFrame#composerFrame {
-            background: qlineargradient(
-                x1:0, y1:0, x2:1, y2:1,
-                stop:0 #19191f,
-                stop:0.55 #1c171b,
-                stop:1 #281317);
-            border: 1px solid #413036;
+            background: #FFFFFF;
+            border: 1px solid #D5E4E2;
             border-radius: 18px;
         }
 
+        QFrame#composerFrame:hover {
+            border: 1px solid #B8DAD7;
+        }
+
         QPlainTextEdit#inputArea {
-            color: #f2f2f3;
+            color: #243434;
             background: transparent;
             border: none;
             padding: 6px;
-            selection-background-color: #932b35;
+            selection-background-color: #B7EAE6;
             font-size: 14px;
         }
 
         QPushButton {
-            color: #e9e9eb;
-            background: #202027;
-            border: 1px solid #36363e;
+            color: #36504E;
+            background: #FFFFFF;
+            border: 1px solid #D4E2E0;
             border-radius: 9px;
             padding: 8px 14px;
         }
 
         QPushButton:hover {
-            background: #312126;
-            border-color: #6b3038;
+            color: #075E5B;
+            background: #EAF7F5;
+            border-color: #A9DAD6;
+        }
+
+        QPushButton:pressed {
+            background: #DDF2F0;
         }
 
         QPushButton#sendButton {
             min-width: 88px;
             min-height: 38px;
+
             color: white;
             font-weight: 700;
+
             background: qlineargradient(
                 x1:0, y1:0, x2:1, y2:1,
-                stop:0 #8b202b,
-                stop:1 #be3944);
-            border: 1px solid #cf4b56;
+                stop:0 #0ABAB5,
+                stop:1 #079A96);
+
+            border: 1px solid #07928E;
             border-radius: 12px;
         }
 
         QPushButton#sendButton:hover {
             background: qlineargradient(
                 x1:0, y1:0, x2:1, y2:1,
-                stop:0 #a52935,
-                stop:1 #d44752);
+                stop:0 #19C8C2,
+                stop:1 #088B87);
         }
 
         QPushButton#sendButton:disabled {
-            color: #89898f;
-            background: #2a262a;
-            border-color: #383239;
+            color: #9AABAA;
+            background: #EDF2F1;
+            border-color: #DCE6E5;
         }
 
         QLabel#dropHint {
-            color: #777780;
+            color: #879795;
             padding: 5px;
         }
 
         QSplitter::handle {
             width: 1px;
-            background: #382126;
+            background: #D9E7E5;
         }
     )");
 }
@@ -287,7 +297,7 @@ QWidget *MainWindow::buildSidebar()
     brand->setObjectName("brand");
 
     auto *subtitle = new QLabel("Desktop AI workspace", sidebar);
-    subtitle->setStyleSheet("color:#85858e;");
+    subtitle->setStyleSheet("color:#819391;");
 
     auto *newChatButton = new QPushButton("+  New chat", sidebar);
     auto *refreshButton = new QPushButton("Refresh agents", sidebar);
@@ -353,8 +363,7 @@ QWidget *MainWindow::buildTopBar()
     m_connectionLabel->setObjectName("connectionLabel");
 
     auto *userLabel = new QLabel(m_username, topBar);
-    userLabel->setStyleSheet(
-        "color:#d6d6da; padding:5px 8px;");
+    userLabel->setStyleSheet("color:#506563; padding:5px 8px;");
 
     auto *settingsButton =
         new QPushButton("Settings", topBar);
@@ -569,16 +578,16 @@ void MainWindow::addMessage(
     safeMessage.replace("\n", "<br>");
 
     const QString senderColor = errorMessage
-        ? "#e15a63"
-        : userMessage ? "#e7a3a8" : "#cfd0d5";
+        ? "#C85C5C"
+        : userMessage ? "#078D88" : "#58706E";
 
     const QString bubbleColor = errorMessage
-        ? "#351419"
-        : userMessage ? "#51171e" : "#1b1b22";
+        ? "#FFF1F1"
+        : userMessage ? "#DDF5F3" : "#FFFFFF";
 
     const QString borderColor = errorMessage
-        ? "#a53640"
-        : userMessage ? "#8d2933" : "#33333c";
+        ? "#F0C5C5"
+        : userMessage ? "#A9DDD9" : "#DCE7E5";
 
     const QString alignment = userMessage ? "right" : "left";
     const QString width = userMessage ? "72%" : "84%";
@@ -597,7 +606,7 @@ void MainWindow::addMessage(
                     font-weight:700;
                 ">%4</div>
                 <div style="
-                    color:#ececef;
+                    color:#243434;
                     background:%5;
                     border:1px solid %6;
                     border-radius:16px;
@@ -632,7 +641,7 @@ void MainWindow::addSystemMessage(const QString &message)
         <div style="
             text-align:center;
             margin:12px 0;
-            color:#8c8c95;
+            color:#879795;
             font-size:12px;
         ">%1</div>
     )").arg(safe);

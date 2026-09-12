@@ -119,6 +119,10 @@ class AgentExecutor:
         }
 
         self.registry.upsert_from_metadata(metadata)
+        try:
+            self.document_router.semantic_router.sync_from_registry()
+        except AttributeError:
+            pass
 
         return {
             "action": "create_agent",

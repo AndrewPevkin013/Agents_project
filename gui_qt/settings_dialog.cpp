@@ -26,62 +26,93 @@ void SettingsDialog::buildInterface()
 {
     setStyleSheet(R"(
         QDialog {
-            background: #0c0c10;
-            color: #eeeeef;
+            background: #F7FAFA;
+            color: #243434;
         }
+
         QTabWidget::pane {
-            border: 1px solid #302327;
+            border: 1px solid #D7E5E3;
             border-radius: 10px;
-            background: #111116;
+            background: #FFFFFF;
         }
+
         QTabBar::tab {
             min-width: 120px;
             padding: 10px 16px;
-            color: #aaaab2;
-            background: #15151b;
-            border: 1px solid #29292f;
+
+            color: #71817F;
+            background: #EFF6F5;
+
+            border: 1px solid #D7E5E3;
         }
+
+        QTabBar::tab:hover {
+            background: #E5F3F1;
+        }
+
         QTabBar::tab:selected {
-            color: white;
-            background: #55151b;
-            border-bottom: 2px solid #c63a45;
+            color: #076D69;
+            background: #DDF5F3;
+            border-bottom: 2px solid #0ABAB5;
         }
+
         QLabel {
-            color: #d5d5d8;
+            color: #344947;
         }
-        QLineEdit, QPlainTextEdit, QComboBox {
-            color: #f2f2f3;
-            background: #19191f;
-            border: 1px solid #34343b;
+
+        QLineEdit,
+        QPlainTextEdit,
+        QComboBox {
+            color: #243434;
+            background: #FFFFFF;
+            border: 1px solid #D3E2E0;
             border-radius: 8px;
             padding: 9px;
-            selection-background-color: #8c2731;
+            selection-background-color: #B7EAE6;
         }
-        QLineEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
-            border: 1px solid #a8323d;
+
+        QLineEdit:focus,
+        QPlainTextEdit:focus,
+        QComboBox:focus {
+            border: 1px solid #0ABAB5;
         }
+
         QPushButton {
             min-height: 36px;
-            color: #eeeeef;
-            background: #24242b;
-            border: 1px solid #383840;
+            color: #36504E;
+            background: #FFFFFF;
+            border: 1px solid #D3E2E0;
             border-radius: 8px;
             padding: 0 16px;
         }
+
         QPushButton:hover {
-            background: #342126;
-            border-color: #7b2b34;
+            color: #076D69;
+            background: #EAF7F5;
+            border-color: #A9DAD6;
         }
+
         QPushButton#primaryButton {
-            background: #8d222d;
-            border-color: #b53642;
+            color: white;
+            font-weight: 700;
+            background: #0ABAB5;
+            border-color: #079A96;
         }
+
         QPushButton#primaryButton:hover {
-            background: #a52b37;
+            background: #079E99;
         }
+
         QPushButton#dangerButton {
-            background: #451419;
-            border-color: #7c252d;
+            color: #AA4A4A;
+            background: #FFF4F4;
+            border-color: #EFCACA;
+        }
+
+        QPushButton#dangerButton:hover {
+            color: #963E3E;
+            background: #FDE8E8;
+            border-color: #E5AAAA;
         }
     )");
 
@@ -90,7 +121,7 @@ void SettingsDialog::buildInterface()
     root->setSpacing(14);
 
     auto *title = new QLabel("Application settings", this);
-    title->setStyleSheet("font-size: 21px; font-weight: 700; color: white;");
+    title->setStyleSheet("font-size:21px; font-weight:700; color:#163C3A;");
     root->addWidget(title);
 
     auto *tabs = new QTabWidget(this);

@@ -18,9 +18,10 @@ int main(int argc, char *argv[])
 
     app.setStyleSheet(R"(
         QToolTip {
-            color: #f2f2f4;
-            background: #19191f;
-            border: 1px solid #4a2024;
+            color: #243434;
+            background: #FFFFFF;
+            border: 1px solid #CFE1DF;
+            border-radius: 6px;
             padding: 6px;
         }
 
@@ -33,11 +34,11 @@ int main(int argc, char *argv[])
         QScrollBar::handle:vertical {
             min-height: 30px;
             border-radius: 5px;
-            background: #34343d;
+            background: #C8DAD8;
         }
 
         QScrollBar::handle:vertical:hover {
-            background: #7d252d;
+            background: #89C9C5;
         }
 
         QScrollBar::add-line:vertical,

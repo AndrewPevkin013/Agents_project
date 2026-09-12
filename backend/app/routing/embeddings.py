@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+import os
+from typing import Sequence
 
 import numpy as np
 
@@ -25,6 +26,7 @@ class EmbeddingService:
         self.device = self._resolve_device(device)
         self.reranker_max_length = reranker_max_length
 
+        self.cache_folder = os.getenv("HF_HUB_CACHE")
         self._embedder = None
         self._reranker = None
 
@@ -48,6 +50,8 @@ class EmbeddingService:
         self._embedder = SentenceTransformer(
             self.embedding_model_name,
             device=self.device,
+            cache_folder=self.cache_folder,
+            local_files_only=bool(self.cache_folder),
         )
 
     def _ensure_reranker(self) -> None:
@@ -60,6 +64,8 @@ class EmbeddingService:
             self.reranker_model_name,
             device=self.device,
             max_length=self.reranker_max_length,
+            cache_folder=self.cache_folder,
+            local_files_only=bool(self.cache_folder),
         )
 
     def embed(self, texts: Sequence[str]) -> np.ndarray:
@@ -83,6 +89,4 @@ class EmbeddingService:
         raw_scores = self._reranker.predict(list(pairs))
         raw_scores = np.asarray(raw_scores, dtype=float)
 
-        # Same normalization used in the notebook:
-        # raw cross-encoder logits -> values in (0, 1).
         return 1.0 / (1.0 + np.exp(-raw_scores))

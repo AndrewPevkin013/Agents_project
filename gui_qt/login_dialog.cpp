@@ -47,75 +47,88 @@ void LoginDialog::buildUi()
         QDialog {
             background: qlineargradient(
                 x1:0, y1:0, x2:1, y2:1,
-                stop:0 #09090c,
-                stop:0.55 #111015,
-                stop:1 #251014);
-            color: #eeeeef;
+                stop:0 #FFFFFF,
+                stop:0.55 #F5FBFA,
+                stop:1 #E9F7F5);
+            color: #243434;
+        }
+
+        QLabel {
+            color: #344947;
         }
 
         QLabel#title {
-            color: #f4f4f5;
+            color: #163C3A;
             font-size: 27px;
             font-weight: 700;
         }
 
         QLabel#subtitle {
-            color: #8f8f98;
+            color: #718381;
             font-size: 13px;
         }
 
         QLabel#error {
-            color: #ef747d;
-            background: #351419;
-            border: 1px solid #812832;
+            color: #B94D4D;
+            background: #FFF0F0;
+            border: 1px solid #F0C6C6;
             border-radius: 8px;
             padding: 9px;
         }
 
         QLineEdit {
-            color: #f1f1f3;
-            background: #19191f;
-            border: 1px solid #39343a;
+            color: #243434;
+            background: #FFFFFF;
+            border: 1px solid #D2E1DF;
             border-radius: 10px;
             padding: 11px;
             font-size: 14px;
+            selection-background-color: #B7EAE6;
+        }
+
+        QLineEdit:hover {
+            border-color: #B7D7D4;
         }
 
         QLineEdit:focus {
-            border: 1px solid #a8323d;
+            border: 1px solid #0ABAB5;
         }
 
         QPushButton {
             min-height: 40px;
-            color: #ececef;
-            background: #24242b;
-            border: 1px solid #3c3c44;
+            color: #36504E;
+            background: #FFFFFF;
+            border: 1px solid #D3E2E0;
             border-radius: 10px;
             padding: 0 16px;
         }
 
         QPushButton:hover {
-            background: #342126;
-            border-color: #793039;
+            color: #076D69;
+            background: #EAF7F5;
+            border-color: #A8D9D5;
         }
 
         QPushButton#primary {
             color: white;
             font-weight: 700;
+
             background: qlineargradient(
                 x1:0, y1:0, x2:1, y2:1,
-                stop:0 #821d27,
-                stop:1 #bd3944);
-            border: 1px solid #ce4a55;
+                stop:0 #0ABAB5,
+                stop:1 #079A96);
+
+            border: 1px solid #078D89;
         }
 
         QPushButton#primary:hover {
-            background: #a42b36;
+            background: #079E99;
         }
 
         QPushButton:disabled {
-            color: #77777e;
-            background: #222228;
+            color: #9CAAA9;
+            background: #EDF2F1;
+            border-color: #E0E8E7;
         }
     )");
 
