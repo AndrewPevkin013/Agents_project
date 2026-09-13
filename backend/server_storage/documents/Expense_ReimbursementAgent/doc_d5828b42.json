@@ -1,0 +1,11 @@
+{
+  "id": "doc_d5828b42",
+  "type": "document",
+  "agent": "Expense_ReimbursementAgent",
+  "source_path": "file:///D:/Downloads/test_corpus-2/test_corpus-2/finance/expense_reimbursement.txt",
+  "saved_path": "",
+  "loaded_at": "2026-09-07 21:01:50",
+  "chars": 0,
+  "chunks_count": 0,
+  "chunks": []
+}

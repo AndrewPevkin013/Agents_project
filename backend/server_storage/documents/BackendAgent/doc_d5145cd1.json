@@ -1,0 +1,13 @@
+{
+  "id": "doc_d5145cd1",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/api_conventions.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_d5145cd1_api_conventions.txt",
+  "loaded_at": "2026-09-07 20:55:29",
+  "chars": 408,
+  "chunks_count": 1,
+  "chunks": [
+    "# Backend: соглашения по REST API\ndepartment: IT/backend\n\n- Все эндпоинты версионируются: `/api/v2/...`\n- Аутентификация: Bearer JWT, срок жизни 15 минут, refresh-токен 7 дней\n- Пагинация: `?page=1&size=50`, максимум 200 элементов\n- Ошибки возвращаются в формате RFC 7807 (`application/problem+json`)\n- Имя сервиса-шлюза: `gateway-core`, порт 8080\n- Таймаут на вызов downstream-сервисов: 3 секунды, 2 ретрая\n"
+  ]
+}

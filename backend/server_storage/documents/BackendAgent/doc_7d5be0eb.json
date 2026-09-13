@@ -1,0 +1,13 @@
+{
+  "id": "doc_7d5be0eb",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/expense_reimbursement.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_7d5be0eb_expense_reimbursement.txt",
+  "loaded_at": "2026-09-07 20:57:28",
+  "chars": 381,
+  "chunks_count": 1,
+  "chunks": [
+    "# Финансы: возмещение расходов\ndepartment: Finance\n\n- Чеки загружаются в систему `ExpensePro` в течение 10 дней\n- Суточные в командировках: 60 € в день по Испании, 90 € за рубежом\n- Лимит на корпоративной карте: 2 000 € в месяц\n- Расходы свыше 500 € требуют согласования руководителя\n- Выплата возмещения — вместе с ближайшей зарплатой\n- Контакт: Дмитрий Ларин, finance@corp.local\n"
+  ]
+}

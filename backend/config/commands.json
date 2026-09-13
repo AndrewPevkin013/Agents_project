@@ -2,83 +2,153 @@
   "commands": [
     {
       "name": "extract",
-      "command": {"action": "extract", "agents": [], "prompts": {}},
-      "functionality": "Get information from one or more agents by sending prompts and receiving answers",
-      "example": "Ask BackendAgent to design API / Узнай у BackendAgent про API",
-      "usage_example": {"action": "extract", "agents": ["BackendAgent"], "prompts": {"BackendAgent": "Спроектируй REST API"}}
+      "command": {
+        "action": "extract",
+        "agents": [],
+        "prompts": {}
+      },
+      "functionality": "Send a task or question to one or more existing agents and return their answers.",
+      "example": "Ask an existing suitable agent to perform a task.",
+      "usage_example": {
+        "action": "extract",
+        "agents": [
+          "<existing_agent>"
+        ],
+        "prompts": {
+          "<existing_agent>": "<task_for_agent>"
+        }
+      }
     },
     {
       "name": "create_agent",
       "command": {
         "action": "create_agent",
         "agent": "",
-        "model_name": "",
-        "system_prompt": "",
         "description": "",
+        "system_prompt": "",
         "tags": []
       },
-      "functionality": "Create a new specialized LLM agent. Optionally specify model_name for a local model",
-      "example": "Create SecurityAgent / Создай агента безопасности",
+      "functionality": "Create a new specialized LLM agent. Do not choose a physical model. The backend ModelRegistry automatically assigns an available base model according to server policy.",
+      "example": "Create a new specialist for a domain that is not covered by existing agents.",
       "usage_example": {
         "action": "create_agent",
-        "agent": "SecurityAgent",
-        "model_name": "",
-        "description": "Security analysis agent",
-        "system_prompt": "Ты security-агент. Отвечаешь за безопасность и уязвимости.",
+        "agent": "<new_agent_name>",
+        "description": "<short_domain_description>",
+        "system_prompt": "<role_and_responsibilities>",
         "tags": [
-          "security",
-          "api"
+          "<domain_tag>",
+          "<task_tag>"
         ]
       }
     },
     {
       "name": "edit_agent",
-      "command": {"action": "edit_agent", "agent": "", "model_name": "", "system_prompt": "", "description": "", "tags": []},
-      "functionality": "Edit existing agent metadata: model, role prompt, description and tags",
-      "example": "Edit SecurityAgent role / Измени роль SecurityAgent",
-      "usage_example": {"action": "edit_agent", "agent": "SecurityAgent", "description": "Updated security agent", "system_prompt": "Ты security-агент. Проводишь аудит API.", "tags": ["security", "audit"]}
+      "command": {
+        "action": "edit_agent",
+        "agent": "",
+        "system_prompt": "",
+        "description": "",
+        "tags": []
+      },
+      "functionality": "Edit role metadata of an existing agent. Physical model assignment is managed by the backend, not by Handler.",
+      "example": "Update the role, description, or tags of an existing agent.",
+      "usage_example": {
+        "action": "edit_agent",
+        "agent": "<existing_agent>",
+        "description": "<updated_description>",
+        "system_prompt": "<updated_role>",
+        "tags": [
+          "<updated_tag>"
+        ]
+      }
     },
     {
       "name": "delete_agent",
-      "command": {"action": "delete_agent", "agent": ""},
-      "functionality": "Remove an agent from registry",
-      "example": "Delete TesterAgent / Удали агента",
-      "usage_example": {"action": "delete_agent", "agent": "TesterAgent"}
+      "command": {
+        "action": "delete_agent",
+        "agent": ""
+      },
+      "functionality": "Remove an existing agent from the registry.",
+      "example": "Delete an existing agent.",
+      "usage_example": {
+        "action": "delete_agent",
+        "agent": "<existing_agent>"
+      }
     },
     {
       "name": "cancel",
-      "command": {"action": "cancel", "reason": ""},
-      "functionality": "Cancel current requested operation without changing agents or data",
-      "example": "Cancel this operation / Отмени операцию",
-      "usage_example": {"action": "cancel", "reason": "User requested cancellation"}
+      "command": {
+        "action": "cancel",
+        "reason": ""
+      },
+      "functionality": "Cancel the requested operation without changing agents or data.",
+      "example": "Cancel the current requested operation.",
+      "usage_example": {
+        "action": "cancel",
+        "reason": "<reason>"
+      }
     },
     {
       "name": "list_agents",
-      "command": {"action": "list_agents"},
-      "functionality": "Show all available agents and their metadata",
-      "example": "What agents are in the system? / Какие агенты есть?",
-      "usage_example": {"action": "list_agents"}
+      "command": {
+        "action": "list_agents"
+      },
+      "functionality": "Show all available agents and their metadata.",
+      "example": "Show the agents currently available in the system.",
+      "usage_example": {
+        "action": "list_agents"
+      }
     },
     {
       "name": "add",
-      "command": {"action": "add", "agent": "", "data": {}},
-      "functionality": "Add new data or knowledge to an agent memory",
-      "example": "Save this report to BackendAgent / Добавь знание агенту",
-      "usage_example": {"action": "add", "agent": "BackendAgent", "data": {"text": "Important API note"}}
+      "command": {
+        "action": "add",
+        "agent": "",
+        "data": {}
+      },
+      "functionality": "Add new data or knowledge to an existing agent memory.",
+      "example": "Save supplied knowledge to a selected existing agent.",
+      "usage_example": {
+        "action": "add",
+        "agent": "<existing_agent>",
+        "data": {
+          "text": "<knowledge>"
+        }
+      }
     },
     {
       "name": "delete",
-      "command": {"action": "delete", "agent": "", "target": ""},
-      "functionality": "Delete data or memory entry from an agent",
-      "example": "Remove outdated data from DevOpsAgent / Удали устаревшие данные",
-      "usage_example": {"action": "delete", "agent": "DevOpsAgent", "target": "rec_123"}
+      "command": {
+        "action": "delete",
+        "agent": "",
+        "target": ""
+      },
+      "functionality": "Delete a data or memory entry from an existing agent.",
+      "example": "Remove an obsolete memory entry from an agent.",
+      "usage_example": {
+        "action": "delete",
+        "agent": "<existing_agent>",
+        "target": "<record_id>"
+      }
     },
     {
       "name": "edit",
-      "command": {"action": "edit", "agent": "", "target": "", "data": {}},
-      "functionality": "Modify or update existing data inside an agent",
-      "example": "Update record in BackendAgent / Измени запись в агенте",
-      "usage_example": {"action": "edit", "agent": "BackendAgent", "target": "rec_123", "data": {"status": "updated"}}
+      "command": {
+        "action": "edit",
+        "agent": "",
+        "target": "",
+        "data": {}
+      },
+      "functionality": "Modify an existing data or memory entry inside an agent.",
+      "example": "Update an existing memory entry in an agent.",
+      "usage_example": {
+        "action": "edit",
+        "agent": "<existing_agent>",
+        "target": "<record_id>",
+        "data": {
+          "<field>": "<value>"
+        }
+      }
     },
     {
       "name": "load",
@@ -87,56 +157,97 @@
         "agent": "",
         "file_path": ""
       },
-      "functionality": "Load a document through Loader pipeline and attach it to selected agent memory",
-      "example": "Load docs/api_design.txt into BackendAgent / Загрузи документ в BackendAgent",
+      "functionality": "Attach a file to a specifically named existing agent. Use only when the user explicitly selects the destination agent. For automatic file/image/drawing/PDF processing and routing, use route_document instead.",
+      "example": "Load a referenced file into a specifically selected existing agent.",
       "usage_example": {
         "action": "load",
-        "agent": "BackendAgent",
-        "file_path": "docs/api_design.txt"
+        "agent": "<existing_agent>",
+        "file_path": "<server_accessible_file_path>"
       }
     },
     {
       "name": "route_document",
-      "command": {"action": "route_document", "file_path": "", "document_text": "", "threshold": 1},
-      "functionality": "Intelligently route document to the best existing agent or create a new specialized agent and load document into it",
-      "example": "Load docs/api_report.txt into the most suitable agent / Загрузи документ в подходящего агента",
-      "usage_example": {"action": "route_document", "file_path": "docs/api_report.txt", "threshold": 1}
+      "command": {
+        "action": "route_document",
+        "file_path": "",
+        "document_text": "",
+        "threshold": 1
+      },
+      "functionality": "Process and intelligently route any referenced file. Text files use the text pipeline. Images, drawings, scans, and PDF files are automatically sent through the visual/drawing pipeline (OpenCV/OCR/diagram extraction) before semantic routing. If no existing agent is suitable, the document-routing subsystem may propose and create a new specialized agent; physical model selection is automatic in the backend.",
+      "example": "Process and route a referenced document, image, drawing, scan, or PDF to the most suitable destination.",
+      "usage_example": {
+        "action": "route_document",
+        "file_path": "<server_accessible_file_path>",
+        "threshold": 1
+      }
     },
     {
       "name": "resolve_logger_conflicts",
-      "command": {"action": "resolve_logger_conflicts"},
-      "functionality": "Analyze registry metrics and resolve logger conflicts through central self-organization process",
-      "example": "Resolve agent conflicts / Разреши конфликты логгера",
-      "usage_example": {"action": "resolve_logger_conflicts"}
+      "command": {
+        "action": "resolve_logger_conflicts"
+      },
+      "functionality": "Analyze registry metrics and resolve logger conflicts through the central self-organization process.",
+      "example": "Resolve detected agent/logger conflicts.",
+      "usage_example": {
+        "action": "resolve_logger_conflicts"
+      }
     },
     {
       "name": "consolidate",
-      "command": {"action": "consolidate", "source_agents": [], "target_agent": ""},
-      "functionality": "Merge two or more agents into one new agent and remove originals",
-      "example": "Merge BackendAgent and DevOpsAgent into PlatformAgent",
-      "usage_example": {"action": "consolidate", "source_agents": ["BackendAgent", "DevOpsAgent"], "target_agent": "PlatformAgent"}
+      "command": {
+        "action": "consolidate",
+        "source_agents": [],
+        "target_agent": ""
+      },
+      "functionality": "Merge two or more existing agents into one new agent when their responsibilities substantially overlap.",
+      "example": "Merge overlapping agents into one consolidated specialist.",
+      "usage_example": {
+        "action": "consolidate",
+        "source_agents": [
+          "<existing_agent_1>",
+          "<existing_agent_2>"
+        ],
+        "target_agent": "<new_agent_name>"
+      }
     },
     {
       "name": "split",
-      "command": {"action": "split", "source_agent": "", "target_agents": []},
-      "functionality": "Split one agent into two specialized agents and remove original",
-      "example": "Split FullstackAgent into BackendAgent and FrontendAgent",
-      "usage_example": {"action": "split", "source_agent": "FullstackAgent", "target_agents": ["BackendAgent", "FrontendAgent"]}
+      "command": {
+        "action": "split",
+        "source_agent": "",
+        "target_agents": []
+      },
+      "functionality": "Split one overly broad existing agent into multiple more focused agents.",
+      "example": "Split an overly broad agent into focused specialists.",
+      "usage_example": {
+        "action": "split",
+        "source_agent": "<existing_agent>",
+        "target_agents": [
+          "<new_agent_1>",
+          "<new_agent_2>"
+        ]
+      }
     },
     {
       "name": "no_action",
-      "command": {"action": "no_action", "reason": ""},
-      "functionality": "Do nothing when no system change is required",
-      "example": "No conflicts found / Нет действий",
-      "usage_example": {"action": "no_action", "reason": "No conflicts detected"}
+      "command": {
+        "action": "no_action",
+        "reason": ""
+      },
+      "functionality": "Do nothing when no system change or execution is required.",
+      "example": "No system action is required.",
+      "usage_example": {
+        "action": "no_action",
+        "reason": "<reason>"
+      }
     },
     {
       "name": "save_system_state",
       "command": {
         "action": "save_system_state"
       },
-      "functionality": "Save current system state, agent registry, conflicts and runtime metrics to server log files",
-      "example": "Save system state / Сохрани состояние системы",
+      "functionality": "Save current system state, agent registry, conflicts, and runtime metrics to server log files.",
+      "example": "Save current system state.",
       "usage_example": {
         "action": "save_system_state"
       }

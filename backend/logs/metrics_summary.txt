@@ -1,19 +1,24 @@
 AGENT METRICS SUMMARY
 
-Requests count: 3
-Total tokens estimated: 108
-Average tokens per request: 36.0
-Average response time: 1.5399981445322435e-05
-Average prompt length: 39.666666666666664
+Requests count: 12
+Total tokens estimated: 718
+Average tokens per request: 59.833333333333336
+Average response time: 102.23882105266209
+Average prompt length: 48.5
 
 BY AGENT:
 - BackendAgent:
-  requests: 2
-  total_tokens_est: 88
-  avg_tokens_per_request: 44.0
-  avg_response_time: 1.559997326694429e-05
+  requests: 5
+  total_tokens_est: 485
+  avg_tokens_per_request: 97.0
+  avg_response_time: 48.63896148478925
 - SecurityAgent:
-  requests: 1
-  total_tokens_est: 20
-  avg_tokens_per_request: 20.0
-  avg_response_time: 1.4999997802078724e-05
+  requests: 3
+  total_tokens_est: 57
+  avg_tokens_per_request: 19.0
+  avg_response_time: 1.3557665927995307e-05
+- DevopsAgent:
+  requests: 4
+  total_tokens_est: 176
+  avg_tokens_per_request: 44.0
+  avg_response_time: 245.91775113375024

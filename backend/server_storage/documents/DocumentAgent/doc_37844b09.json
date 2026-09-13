@@ -1,0 +1,13 @@
+{
+  "id": "doc_37844b09",
+  "type": "document",
+  "agent": "DocumentAgent",
+  "source_path": "/project/backend/server_storage/uploads/password_policy.txt",
+  "saved_path": "server_storage/documents/DocumentAgent/doc_37844b09_password_policy.txt",
+  "loaded_at": "2026-09-07 20:57:10",
+  "chars": 326,
+  "chunks_count": 1,
+  "chunks": [
+    "# ИБ: парольная политика\ndepartment: InfoSec\n\n- Минимальная длина пароля: 14 символов\n- Смена пароля: раз в 180 дней, повтор последних 10 запрещён\n- MFA обязательна для VPN, почты и админ-панелей\n- Блокировка учётной записи после 5 неудачных попыток на 30 минут\n- Хранение паролей только в корпоративном менеджере (Bitwarden)\n"
+  ]
+}

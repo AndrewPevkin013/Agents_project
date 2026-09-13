@@ -1,0 +1,13 @@
+{
+  "id": "doc_e4549da3",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/remote_work_policy.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_e4549da3_remote_work_policy.txt",
+  "loaded_at": "2026-09-07 20:56:03",
+  "chars": 324,
+  "chunks_count": 1,
+  "chunks": [
+    "# Политика удалённой работы\ndepartments: HR, InfoSec, Finance\n\n- До 3 дней удалёнки в неделю, согласование с руководителем\n- Подключение только через корпоративный VPN с MFA\n- Компенсация домашнего рабочего места: до 300 € в год через `ExpensePro`\n- Работа из-за рубежа — не более 30 дней в году, уведомление HR за 2 недели\n"
+  ]
+}

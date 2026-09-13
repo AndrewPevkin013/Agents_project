@@ -1,0 +1,13 @@
+{
+  "id": "doc_f8044e57",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/engineer_onboarding_it.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_f8044e57_engineer_onboarding_it.txt",
+  "loaded_at": "2026-09-07 20:55:50",
+  "chars": 422,
+  "chunks_count": 1,
+  "chunks": [
+    "# Онбординг инженера: совместный регламент HR и IT\ndepartments: HR, IT/backend, IT/frontend, InfoSec\n\nК общему чек-листу HR добавляется:\n- Доступы к GitLab, Jira и `gateway-core` выдаются на 2-й день по заявке наставника\n- Настройка MFA и менеджера паролей до получения VPN\n- Бэкендеры проходят ревью первых трёх MR у Ивана Соколова, фронтендеры — у Марии Ковалёвой\n- Курс «Основы ИБ» — обязательно до конца первой недели\n"
+  ]
+}

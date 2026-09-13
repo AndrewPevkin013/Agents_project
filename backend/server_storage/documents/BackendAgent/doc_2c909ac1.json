@@ -1,0 +1,13 @@
+{
+  "id": "doc_2c909ac1",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/database_ops.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_2c909ac1_database_ops.txt",
+  "loaded_at": "2026-09-07 20:55:37",
+  "chars": 354,
+  "chunks_count": 1,
+  "chunks": [
+    "# Backend: эксплуатация PostgreSQL\ndepartment: IT/backend\n\n- Кластер: `pg-prod-01` (primary), `pg-prod-02` (replica)\n- Бэкапы: pg_basebackup ежедневно в 02:00, WAL-архив в S3, хранение 30 дней\n- Миграции применяются через Alembic только из CI, вручную запрещено\n- Ответственный за схему БД: Иван Соколов\n- Порог алерта по репликационному лагу: 10 секунд\n"
+  ]
+}

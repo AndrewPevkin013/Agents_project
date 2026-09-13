@@ -326,6 +326,8 @@ class DrawingAnalyzer:
                 edges.append(item)
 
         metadata = {
+            "processing_pipeline": "drawing_vision",
+            "source_kind": "drawing_pdf",
             "page_count": len(pages),
             "pages": [
                 {
@@ -415,12 +417,17 @@ class DrawingAnalyzer:
                 / f"{source.stem}.processed.json"
             )
 
+            routed_tags = list(tags)
+            for routing_tag in ("visual", "drawing", "pdf"):
+                if routing_tag not in routed_tags:
+                    routed_tags.append(routing_tag)
+
             document = ProcessedDocument(
                 source_path=str(source),
                 file_name=source.name,
                 kind="drawing_pdf",
                 text=text,
-                tags=tags,
+                tags=routed_tags,
                 metadata=metadata,
                 diagram=diagram,
                 pages=pages,
@@ -454,13 +461,22 @@ class DrawingAnalyzer:
             / f"{source.stem}.processed.json"
         )
 
+        image_tags = list(page["tags"])
+        for routing_tag in ("visual", "drawing", "image"):
+            if routing_tag not in image_tags:
+                image_tags.append(routing_tag)
+
+        image_metadata = dict(page["metadata"])
+        image_metadata["processing_pipeline"] = "drawing_vision"
+        image_metadata["source_kind"] = "drawing_image"
+
         document = ProcessedDocument(
             source_path=str(source),
             file_name=source.name,
             kind="drawing_image",
             text=page["text"],
-            tags=page["tags"],
-            metadata=page["metadata"],
+            tags=image_tags,
+            metadata=image_metadata,
             diagram=page["diagram"],
             pages=[],
             artifacts={

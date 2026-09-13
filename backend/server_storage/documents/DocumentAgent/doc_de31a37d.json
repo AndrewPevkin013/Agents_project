@@ -1,0 +1,13 @@
+{
+  "id": "doc_de31a37d",
+  "type": "document",
+  "agent": "DocumentAgent",
+  "source_path": "/project/backend/server_storage/uploads/incident_response.txt",
+  "saved_path": "server_storage/documents/DocumentAgent/doc_de31a37d_incident_response.txt",
+  "loaded_at": "2026-09-07 20:57:10",
+  "chars": 364,
+  "chunks_count": 1,
+  "chunks": [
+    "# ИБ: реагирование на инциденты\ndepartment: InfoSec\n\n- Приоритеты инцидентов: P1 (утечка данных), P2 (компрометация учётки), P3 (фишинг без последствий)\n- SLA реакции: P1 — 15 минут, P2 — 1 час, P3 — 1 рабочий день\n- Дежурный ИБ: канал `#sec-oncall`, телефон внутренний 4410\n- Обязательный отчёт по P1/P2 в течение 72 часов\n- Ответственный: Алексей Дорохов (CISO)\n"
+  ]
+}

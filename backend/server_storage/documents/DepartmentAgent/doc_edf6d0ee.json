@@ -1,0 +1,13 @@
+{
+  "id": "doc_edf6d0ee",
+  "type": "document",
+  "agent": "DepartmentAgent",
+  "source_path": "/project/backend/server_storage/uploads/onboarding_checklist.txt",
+  "saved_path": "server_storage/documents/DepartmentAgent/doc_edf6d0ee_onboarding_checklist.txt",
+  "loaded_at": "2026-09-07 20:22:24",
+  "chars": 285,
+  "chunks_count": 1,
+  "chunks": [
+    "# HR: чек-лист онбординга\ndepartment: HR\n\n- День 1: оформление, выдача пропуска, вводная встреча с HR\n- Неделя 1: назначение наставника, знакомство с командой\n- Испытательный срок: 3 месяца, промежуточная встреча через 6 недель\n- Обязательные курсы: «Основы ИБ», «Корпоративная этика»\n"
+  ]
+}

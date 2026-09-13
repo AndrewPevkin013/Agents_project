@@ -1,0 +1,13 @@
+{
+  "id": "doc_455fa6af",
+  "type": "document",
+  "agent": "DepartmentAgent",
+  "source_path": "/project/backend/server_storage/uploads/budget_2026.txt",
+  "saved_path": "server_storage/documents/DepartmentAgent/doc_455fa6af_budget_2026.txt",
+  "loaded_at": "2026-09-07 20:21:40",
+  "chars": 238,
+  "chunks_count": 1,
+  "chunks": [
+    "# Финансы: бюджет 2026\ndepartment: Finance\n\n- Общий бюджет IT на 2026: 1,8 млн €\n- Облачная инфраструктура: 620 тыс. €\n- Лицензии ПО: 240 тыс. €\n- Обучение сотрудников: 90 тыс. €\n- Пересмотр бюджета: ежеквартально, ближайший — 15 октября\n"
+  ]
+}

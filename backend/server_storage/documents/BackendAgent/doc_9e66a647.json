@@ -1,0 +1,13 @@
+{
+  "id": "doc_9e66a647",
+  "type": "document",
+  "agent": "BackendAgent",
+  "source_path": "/project/backend/server_storage/uploads/incident_2026_08_outage.txt",
+  "saved_path": "server_storage/documents/BackendAgent/doc_9e66a647_incident_2026_08_outage.txt",
+  "loaded_at": "2026-09-07 20:55:59",
+  "chars": 474,
+  "chunks_count": 1,
+  "chunks": [
+    "# Постмортем: сбой 21 августа 2026\ndepartments: IT/backend, InfoSec, Finance\n\nПричина: истёкший TLS-сертификат на `gateway-core` + неудачная ручная миграция\nна `pg-prod-01` в обход CI. ИБ классифицировала инцидент как P2, так как\nвременно был открыт debug-эндпоинт без аутентификации.\n\nПоследствия: простой 3 ч 40 мин, недополученная выручка оценена финансами в\n27 тыс. €. Действия: автопродление сертификатов, запрет ручных миграций,\nаудит debug-эндпоинтов до 30 сентября.\n"
+  ]
+}

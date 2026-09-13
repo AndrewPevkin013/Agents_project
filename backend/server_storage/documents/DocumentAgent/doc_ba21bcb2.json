@@ -1,0 +1,13 @@
+{
+  "id": "doc_ba21bcb2",
+  "type": "document",
+  "agent": "DocumentAgent",
+  "source_path": "/project/backend/server_storage/uploads/vacation_policy.txt",
+  "saved_path": "server_storage/documents/DocumentAgent/doc_ba21bcb2_vacation_policy.txt",
+  "loaded_at": "2026-09-07 20:58:55",
+  "chars": 287,
+  "chunks_count": 1,
+  "chunks": [
+    "# HR: отпуска и отгулы\ndepartment: HR\n\n- Ежегодный отпуск: 28 календарных дней\n- Заявка подаётся в HR-портале не позднее чем за 14 дней\n- Отгулы: до 3 дней в год без объяснения причины\n- Перенос неиспользованных дней: максимум 10 на следующий год\n- Контакт: hr@corp.local, Ольга Петрова\n"
+  ]
+}
