@@ -1,0 +1,5 @@
+D:\bogdanov\PyProjects\Agents_project\Docs\q3_finance_report.txt
+D:\bogdanov\PyProjects\Agents_project\Docs\ai_market_research_2025.txt
+D:\bogdanov\PyProjects\Agents_project\Docs\software_service_agreement.txt
+D:\bogdanov\PyProjects\Agents_project\Docs\q4_strategic_plan.txt
+D:\bogdanov\PyProjects\Agents_project\Docs\sales_data_q3_2025.csv

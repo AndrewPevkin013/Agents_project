@@ -1,0 +1,47 @@
+Investment Term Sheet
+======================
+Deal Reference: ITS-2025-EUR-089
+Date: September 15, 2025
+Jurisdiction: Netherlands (Dutch law)
+
+TRANSACTION OVERVIEW
+This term sheet outlines the proposed terms for a Series B investment round
+in TechVenture LLC. The investment is structured as preferred equity with
+participating liquidation preferences and standard investor protections.
+
+FINANCIAL TERMS
+Investment amount: 12,500,000 EUR
+Pre-money valuation: 47,000,000 EUR
+Post-money valuation: 59,500,000 EUR
+Price per share: 18.40 EUR
+New shares issued: 679,348 Series B Preferred Shares
+Investor ownership post-close: 20.97 percent
+
+FINANCIAL COVENANTS
+- Minimum cash runway: 12 months at all times
+- Maximum debt-to-equity ratio: 1.5x
+- Quarterly financial reporting to board within 30 days of quarter close
+- Annual audited financials required (Big 4 auditor)
+- EBITDA positive by Q3 2026 (covenant breach triggers step-in rights)
+
+LEGAL PROVISIONS
+Liquidation preference: 1.5x non-participating preferred
+Anti-dilution: Broad-based weighted average
+Drag-along: 75 percent majority vote required
+Tag-along: Pro-rata rights for all preferred shareholders
+Board composition: 5 members — 2 founders, 2 investors, 1 independent
+Information rights: Full access to books and records
+Governing law: Kingdom of the Netherlands
+Dispute resolution: Amsterdam arbitration (NAI rules)
+
+CLOSING CONDITIONS
+- Satisfactory legal due diligence completion
+- Audited financials for FY2024 and Q1-Q2 2025
+- Key employee retention agreements (3 year cliff vesting)
+- No material adverse change between signing and closing
+- Regulatory approval if required under Dutch FDI screening rules
+
+TIMELINE
+Term sheet signing: October 1, 2025
+Due diligence period: 6 weeks
+Target closing date: November 15, 2025

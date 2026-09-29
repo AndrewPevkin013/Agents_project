@@ -1,0 +1,23 @@
+ATLAS API - OPERATIONS RUNBOOK
+Revision: 4.2
+Service owner: Platform Engineering
+
+Service profile
+Atlas API is the production FastAPI backend service used by internal business
+applications. PostgreSQL is the system of record and Redis is used for caching.
+Production HTTPS traffic is exposed on port 8443.
+
+Routine checks
+- Poll /health every 30 seconds.
+- Investigate when p95 request latency exceeds 350 ms for five consecutive minutes.
+- Verify PostgreSQL connectivity before restarting application workers.
+- Capture and preserve the diagnostic bundle before any production restart.
+
+Escalation
+If the service remains unavailable for more than 10 minutes, notify the Platform
+Engineering incident commander. If database integrity is suspected, stop automated
+restarts and escalate to the database team.
+
+Security note
+Credentials and administrator passwords are maintained in a separate secret-management
+system and are not included in this runbook.

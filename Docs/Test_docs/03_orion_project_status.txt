@@ -1,0 +1,31 @@
+ORION MIGRATION PROGRAM - WEEKLY STATUS REPORT
+Report date: 17 September 2026
+Project code: ORION-MIG-26
+
+Purpose
+The Orion Migration program moves the company's internal analytics platform from
+legacy virtual machines to the new managed infrastructure.
+
+Governance
+Project owner: Elena Fischer
+Approved budget: EUR 180,000
+Final delivery deadline: 15 December 2026
+The steering committee meets every Tuesday at 10:00.
+
+Milestones
+1. Infrastructure readiness - 30 September 2026
+2. Data migration rehearsal - 31 October 2026
+3. Production cutover - 10 December 2026
+
+Current status
+Infrastructure preparation is on schedule. The main current risk is a two-week
+delay in receiving the final data-retention approval from the compliance team.
+A contingency window of five days is reserved before final delivery.
+
+Decision log
+The project owner approved parallel execution of application validation and
+documentation review. No increase to the approved budget has been authorized.
+
+Information intentionally absent
+This report does not contain individual employee salaries, personal home addresses,
+bank details, or private authentication credentials.

@@ -20,6 +20,71 @@ _CREATE_WORDS = (
     "create agent", "new agent", "создай агента", "создать агента", "новый агент",
 )
 
+_SYSTEM_QA_PATTERNS = (
+    # Russian
+    "какие агенты",
+    "какие агенты доступны",
+    "какой агент доступен",
+    "какие команды",
+    "какие команды доступны",
+    "какие возможности",
+    "что умеет система",
+    "что умеет handler",
+    "что умеет хендлер",
+    "как работает система",
+    "как работает handler",
+    "как работает хендлер",
+    "какие функции",
+    "какие функции доступны",
+    "расскажи об агентах",
+    "расскажи о системе",
+    "список агентов",
+    "список команд",
+
+    # English
+    "available agents",
+    "which agents",
+    "what agents",
+    "available commands",
+    "which commands",
+    "what commands",
+    "system capabilities",
+    "what can the system",
+    "how does the system work",
+    "how does handler work",
+    "list agents",
+    "list commands",
+)
+
+
+def is_explicit_system_qa(user_request: str) -> bool:
+    """
+    Detect obvious questions ABOUT the multi-agent system itself.
+
+    This is deliberately conservative.
+
+    It is not intended to replace LLM intent understanding. Its purpose is
+    to prevent an obvious SYSTEM Q&A request from accidentally becoming an
+    executable engine command when a small local LLM fails to follow the
+    MODE 1 / MODE 2 instruction.
+    """
+
+    text = " ".join(
+        user_request
+        .lower()
+        .strip()
+        .replace("ё", "е")
+        .split()
+    )
+
+    if not text:
+        return False
+
+    return any(
+        pattern.replace("ё", "е") in text
+        for pattern in _SYSTEM_QA_PATTERNS
+    )
+
 
 def _merge_commands(primary: List[Dict[str, Any]], extra: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     result: List[Dict[str, Any]] = []

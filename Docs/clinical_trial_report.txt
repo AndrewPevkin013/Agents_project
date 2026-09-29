@@ -1,0 +1,38 @@
+Clinical Trial Report: Phase II
+=================================
+Trial ID: CT-2025-NCT-04471
+Sponsor: MediResearch Institute
+Principal Investigator: Dr. Elena Marchetti
+Date: August 2025
+
+STUDY OVERVIEW
+This Phase II randomized controlled trial evaluates the efficacy and safety
+of compound MR-2247 in patients with moderate-to-severe rheumatoid arthritis.
+Total enrollment: 284 patients across 12 clinical sites in Europe.
+
+PRIMARY ENDPOINTS
+- ACR50 response at week 24: 61.3 percent (treatment) vs 28.7 percent (placebo)
+- p-value: < 0.001 (statistically significant)
+- Number needed to treat (NNT): 3.1
+
+SECONDARY ENDPOINTS
+- DAS28-CRP reduction: -2.8 (treatment) vs -1.1 (placebo)
+- HAQ-DI improvement: 0.62 points mean reduction
+- Radiographic progression: inhibited in 78 percent of treatment group
+
+SAFETY PROFILE
+Adverse events (any grade): 42.3 percent treatment, 38.1 percent placebo
+Serious adverse events: 4.2 percent treatment, 3.8 percent placebo
+Most common: upper respiratory infection (12 percent), headache (8 percent)
+No cases of opportunistic infection or malignancy observed.
+
+PHARMACOKINETICS
+Half-life: 14.2 hours
+Bioavailability: 87 percent (oral administration)
+Peak plasma concentration: 4.1 hours post-dose
+Renal clearance: 34 percent unchanged
+
+CONCLUSION
+MR-2247 demonstrates clinically meaningful and statistically significant
+improvement in RA disease activity with an acceptable safety profile.
+Advancement to Phase III trials is recommended.

@@ -1,0 +1,70 @@
+ESG & Sustainability Report 2025
+==================================
+Company: TechVenture LLC
+Reporting Period: FY2024
+Framework: GRI Standards, TCFD aligned
+Verified by: EcoAudit Partners GmbH
+
+EXECUTIVE SUMMARY
+TechVenture LLC's second annual ESG report covers environmental impact,
+social responsibility initiatives, and governance improvements in FY2024.
+Total carbon footprint reduced by 18 percent year-over-year.
+
+ENVIRONMENTAL METRICS
+
+Carbon Emissions (Scope 1, 2, 3)
+Scope 1 (direct): 42 tCO2e (offices, company vehicles)
+Scope 2 (electricity): 187 tCO2e (data centers, offices)
+Scope 3 (supply chain, travel): 634 tCO2e
+Total: 863 tCO2e (vs 1,051 tCO2e in FY2023, -18 percent)
+
+Energy Consumption
+Total energy: 2.4 GWh
+Renewable energy share: 67 percent (target: 80 percent by 2026)
+Data center PUE: 1.38 (industry average: 1.58)
+Cloud migration savings: 340 MWh vs on-premise baseline
+
+Water Usage
+Total water consumption: 1,240 cubic meters
+Water intensity: 0.31 m3 per employee
+Recycled water use: 22 percent
+
+SOCIAL METRICS
+
+Workforce Diversity
+Total employees: 47
+Gender ratio: 38 percent female, 62 percent male
+Senior leadership diversity: 33 percent female
+Nationalities represented: 14
+
+Employee Wellbeing
+Employee NPS (eNPS): 52
+Voluntary turnover rate: 8.3 percent (industry: 13 percent)
+Training hours per employee: 42 hours
+Mental health program participation: 71 percent
+
+Community Impact
+Charitable donations: 45,000 EUR (1.1 percent of net profit)
+Pro bono technical work: 320 hours
+University partnerships: 3 (Berlin, Amsterdam, Warsaw)
+
+GOVERNANCE
+
+Board Composition
+Total board members: 5
+Independent directors: 2 (40 percent)
+ESG committee established: Q2 2024
+Ethics hotline reports: 2 (both resolved within 30 days)
+
+Policies Updated in FY2024
+- Supplier Code of Conduct (mandatory ESG screening)
+- AI Ethics Policy (bias auditing, transparency requirements)
+- Data Privacy Policy (GDPR+ standards)
+- Whistleblower Protection Policy
+
+TARGETS FOR FY2025
+- Net zero Scope 1 and 2 emissions
+- 50 percent renewable energy
+- Gender parity in new hires (50/50)
+- ISO 14001 environmental certification
+- Supply chain ESG audit: top 20 vendors

@@ -1,0 +1,56 @@
+Quantum Computing Hardware Review 2025
+========================================
+Authors: Dr. Pavel Novak, Dr. Sarah Chen
+Institute: Quantum Research Consortium
+Date: July 2025
+
+EXECUTIVE SUMMARY
+This report reviews the current state of quantum computing hardware,
+focusing on superconducting qubits, trapped ion systems, and photonic
+quantum processors. We evaluate coherence times, gate fidelities,
+and error correction progress across leading platforms.
+
+QUBIT TECHNOLOGIES COMPARISON
+
+Superconducting Qubits (IBM, Google)
+- Qubit count: up to 1,121 (IBM Condor)
+- Gate fidelity: 99.5 percent two-qubit gates
+- Coherence time: 100-500 microseconds
+- Operating temperature: 15 millikelvin
+- Error rate per gate: 0.1-0.5 percent
+
+Trapped Ion Systems (IonQ, Quantinuum)
+- Qubit count: up to 32 fully connected
+- Gate fidelity: 99.9 percent two-qubit gates
+- Coherence time: seconds to minutes
+- Operating temperature: room temperature (ion trap)
+- Error rate per gate: 0.01-0.1 percent
+
+Photonic Processors (PsiQuantum, Xanadu)
+- Qubit count: variable (measurement-based)
+- Gate fidelity: 99.3 percent
+- Coherence time: nanoseconds (photon lifetime)
+- Operating temperature: room temperature
+- Advantage: scalable silicon fabrication
+
+QUANTUM ERROR CORRECTION MILESTONES
+- Google Willow: below threshold error correction achieved (Dec 2024)
+- IBM: 1000-qubit logical error rate below physical error rate
+- Microsoft: topological qubit prototype demonstrated (Q1 2025)
+
+QUANTUM ADVANTAGE DEMONSTRATIONS
+- Optimization: 10,000x speedup on portfolio optimization vs classical
+- Chemistry: molecular simulation of FeMoco (nitrogen fixation enzyme)
+- Cryptography: Shor algorithm run on 2048-bit RSA key (simulation)
+- Machine learning: quantum kernel methods on 512-dimensional feature space
+
+INDUSTRY APPLICATIONS TIMELINE
+2025-2026: Quantum chemistry, drug discovery simulations
+2027-2028: Financial optimization, logistics routing
+2029-2030: Cryptographically relevant quantum computers (CRQC)
+Post-2030: Fault-tolerant universal quantum computation
+
+CONCLUSION
+Quantum computing is transitioning from research to early commercial use.
+Hardware progress is accelerating but fault-tolerant general-purpose
+quantum computing remains 5-10 years away.

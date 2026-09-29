@@ -4,8 +4,10 @@ import json
 import shutil
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 from uuid import uuid4
+
+from app.routing.chunker import split_into_chunks
 
 
 class DocumentLoader:
@@ -25,17 +27,14 @@ class DocumentLoader:
 
         return path.name
 
-    @staticmethod
-    def split_text(text: str, chunk_size: int = 1000) -> List[str]:
-        if not text:
-            return []
 
-        return [
-            text[i:i + chunk_size]
-            for i in range(0, len(text), chunk_size)
-        ]
-
-    def load(self, file_path: str, agent_name: str) -> Dict[str, Any]:
+    def load(
+        self,
+        file_path: str,
+        agent_name: str,
+        document_text: str = "",
+        document_processing: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
         source = Path(file_path)
 
         document_id = f"doc_{uuid4().hex[:8]}"
@@ -48,8 +47,17 @@ class DocumentLoader:
             saved_file = agent_dir / f"{document_id}_{source.name}"
             shutil.copy2(source, saved_file)
 
-        text = self.read_document(file_path)
-        chunks = self.split_text(text)
+        text = (
+            document_text
+            if document_text.strip()
+            else self.read_document(file_path)
+        )
+
+        chunks = split_into_chunks(
+            text,
+            max_chars=1000,
+            min_chars=100,
+        )
 
         metadata = {
             "id": document_id,
@@ -61,12 +69,17 @@ class DocumentLoader:
             "chars": len(text),
             "chunks_count": len(chunks),
             "chunks": chunks,
+            "document_processing": document_processing or {},
         }
 
         meta_path = agent_dir / f"{document_id}.json"
         meta_path.write_text(
-            json.dumps(metadata, ensure_ascii=False, indent=2),
-            encoding="utf-8"
+            json.dumps(
+                metadata,
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
         )
 
         return metadata

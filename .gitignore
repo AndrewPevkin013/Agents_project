@@ -1,18 +1,41 @@
-# Secrets / local config
 .env
+.env.*
+!.env.example
 
-# IDE
 .vscode/
 .idea/
 
-# Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 
-# Large local model weights
-models/**/model.safetensors
-models/**/pytorch_model.bin
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Optional local caches
-models/**/.cache/
-models/complexity_router/encoder/
+venv/
+.venv/
+
+gui_qt/build/
+gui_qt/build*/
+build/
+cmake-build-*/
+
+
+/models/
+/model_offload/
+/nikita_tests/
+
+*.log
+agent_logs.json
+
+backend/logs/
+
+backend/server_storage/
+
+.DS_Store
+Thumbs.db
+desktop.ini

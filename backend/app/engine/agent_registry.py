@@ -188,16 +188,6 @@ class AgentRegistry:
             },
         )
 
-        normalized["device"] = metadata.get(
-            "device",
-            "auto",
-        )
-
-        normalized["torch_dtype"] = metadata.get(
-            "torch_dtype",
-            "float16",
-        )
-
         return normalized
 
     def _create_instance(

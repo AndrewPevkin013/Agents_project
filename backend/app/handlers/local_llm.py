@@ -5,12 +5,32 @@ from typing import Any, Dict
 
 from app.engine.agent_registry import AgentRegistry
 from app.engine.command_store import CommandStore
-from app.handlers.base import BaseHandler, HandlerOutput
+
+from app.handlers.base import (
+    BaseHandler,
+    HandlerOutput,
+)
+
 from app.handlers.output_parser import parse_handler_output
-from app.handlers.prompt import build_handler_system_prompt
+
+from app.handlers.prompt import (
+    build_handler_system_prompt,
+    is_explicit_system_qa,
+)
+
+from app.models.model_manager import get_model_manager
 
 
 class LocalLLMHandler(BaseHandler):
+    """
+    Local LLM implementation of the central Handler.
+
+    The Handler does NOT own a physical model instance.
+
+    It requests a shared runtime from ModelManager so the same local base
+    model can later be reused by LLMAgent instances.
+    """
+
     def __init__(
         self,
         registry: AgentRegistry,
@@ -25,105 +45,91 @@ class LocalLLMHandler(BaseHandler):
         self.models_dir = Path(models_dir)
 
         self.model_name = config["model_name"]
+        self.model_path = self.models_dir / self.model_name
 
-        self.model_path = (
-            self.models_dir
-            / self.model_name
-        )
+        self.device = str(
+            config.get(
+                "device",
+                "cpu",
+            )
+        ).lower()
 
-        self.device = config.get(
-            "device",
-            "cpu"
-        )
-
-        self.dtype_name = config.get(
-            "torch_dtype",
-            "float32"
-        )
+        self.dtype_name = str(
+            config.get(
+                "torch_dtype",
+                "float32",
+            )
+        ).lower()
 
         generation = config.get(
             "generation",
-            {}
+            {},
         )
 
-        self.max_new_tokens = generation.get(
-            "max_new_tokens",
-            256
+        self.max_new_tokens = int(
+            generation.get(
+                "max_new_tokens",
+                256,
+            )
         )
 
-        self.temperature = generation.get(
-            "temperature",
-            0.2
+        self.temperature = float(
+            generation.get(
+                "temperature",
+                0.2,
+            )
         )
 
-        self.do_sample = generation.get(
-            "do_sample",
-            False
+        self.do_sample = bool(
+            generation.get(
+                "do_sample",
+                False,
+            )
         )
 
-        self.tokenizer = None
-        self.model = None
+        self._runtime = None
 
     def _ensure_loaded(self) -> None:
-        if (
-            self.tokenizer is not None
-            and self.model is not None
-        ):
+        if self._runtime is not None:
             return
 
         if not self.model_path.exists():
             raise FileNotFoundError(
-                f"Local Handler model not found: "
-                f"{self.model_path}"
+                f"Local Handler model not found: {self.model_path}"
             )
 
-        import torch
-
-        from transformers import (
-            AutoModelForCausalLM,
-            AutoTokenizer,
-        )
-
-        dtype_map = {
-            "float32": torch.float32,
-            "float16": torch.float16,
-            "bfloat16": torch.bfloat16,
-        }
-
-        torch_dtype = dtype_map.get(
-            self.dtype_name,
-            torch.float32
-        )
-
         print(
-            "Loading local Handler model:",
-            self.model_path
+            "Loading local Handler model through ModelManager:",
+            self.model_path,
         )
 
         print(
             "Handler device:",
-            self.device
+            self.device,
         )
 
-        self.tokenizer = (
-            AutoTokenizer.from_pretrained(
-                self.model_path,
-                local_files_only=True,
-                trust_remote_code=True,
-            )
+        print(
+            "Handler dtype:",
+            self.dtype_name,
         )
 
-        self.model = (
-            AutoModelForCausalLM.from_pretrained(
-                self.model_path,
-                local_files_only=True,
-                torch_dtype=torch_dtype,
-                trust_remote_code=True,
-            )
+        manager = get_model_manager()
+
+        self._runtime = manager.get_runtime(
+            model_path=str(self.model_path),
+            device=self.device,
+            torch_dtype=self.dtype_name,
         )
 
-        self.model.to(self.device)
-        self.model.eval()
+    @property
+    def tokenizer(self):
+        self._ensure_loaded()
+        return self._runtime.tokenizer
+
+    @property
+    def model(self):
+        self._ensure_loaded()
+        return self._runtime.model
 
     def _build_system_prompt(
         self,
@@ -136,6 +142,14 @@ class LocalLLMHandler(BaseHandler):
             self.command_store.retrieve,
         )
 
+    def _input_device(self):
+        return (
+            self.model
+            .get_input_embeddings()
+            .weight
+            .device
+        )
+
     def handle(
         self,
         user_request: str,
@@ -143,11 +157,29 @@ class LocalLLMHandler(BaseHandler):
 
         self._ensure_loaded()
 
-        system_prompt = (
-            self._build_system_prompt(
-                user_request
-            )
+        # Guard only obvious questions about the multi-agent system.
+        #
+        # This does not replace LLM routing. It prevents a small local model
+        # from accidentally turning an obvious SYSTEM Q&A request into an
+        # executable command.
+        explicit_system_qa = is_explicit_system_qa(
+            user_request
         )
+
+        system_prompt = self._build_system_prompt(
+            user_request
+        )
+
+        if explicit_system_qa:
+            system_prompt += (
+                "\n\n"
+                "IMPORTANT FOR THIS REQUEST:\n"
+                "This request has already been classified by the backend "
+                "as MODE 2 — SYSTEM Q&A MODE.\n"
+                "Answer ONLY in natural language.\n"
+                "Do NOT output JSON.\n"
+                "Do NOT execute or propose an engine command as JSON.\n"
+            )
 
         messages = [
             {
@@ -160,17 +192,19 @@ class LocalLLMHandler(BaseHandler):
             },
         ]
 
+        tokenizer = self.tokenizer
+        model = self.model
+
         if hasattr(
-            self.tokenizer,
-            "apply_chat_template"
+            tokenizer,
+            "apply_chat_template",
         ):
-            text = (
-                self.tokenizer.apply_chat_template(
-                    messages,
-                    tokenize=False,
-                    add_generation_prompt=True,
-                )
+            text = tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
             )
+
         else:
             text = (
                 f"{system_prompt}\n\n"
@@ -179,29 +213,64 @@ class LocalLLMHandler(BaseHandler):
                 f"Answer:"
             )
 
-        inputs = self.tokenizer(
+        inputs = tokenizer(
             text,
-            return_tensors="pt"
-        ).to(self.device)
+            return_tensors="pt",
+        )
 
-        outputs = self.model.generate(
+        input_device = self._input_device()
+
+        inputs = {
+            key: value.to(input_device)
+            for key, value in inputs.items()
+        }
+
+        generation_kwargs: Dict[str, Any] = {
+            "max_new_tokens": self.max_new_tokens,
+            "do_sample": self.do_sample,
+            "pad_token_id": tokenizer.eos_token_id,
+        }
+
+        if self.do_sample:
+            generation_kwargs["temperature"] = (
+                self.temperature
+            )
+
+        outputs = model.generate(
             **inputs,
-            max_new_tokens=self.max_new_tokens,
-            temperature=self.temperature,
-            do_sample=self.do_sample,
-            pad_token_id=self.tokenizer.eos_token_id,
+            **generation_kwargs,
         )
 
         generated_tokens = outputs[0][
             inputs["input_ids"].shape[-1]:
         ]
 
-        answer = self.tokenizer.decode(
+        answer = tokenizer.decode(
             generated_tokens,
-            skip_special_tokens=True
+            skip_special_tokens=True,
         ).strip()
 
-        print("LOCAL HANDLER raw answer:")
+        print(
+            "LOCAL HANDLER mode:",
+            "SYSTEM_QA"
+            if explicit_system_qa
+            else "LLM_ROUTED",
+        )
+
+        print(
+            "LOCAL HANDLER raw answer:"
+        )
+
         print(answer)
 
-        return parse_handler_output(answer)
+        # Critical safety boundary:
+        #
+        # an obvious system question can NEVER become an executable
+        # Handler command merely because the LLM happened to emit JSON.
+        if explicit_system_qa:
+            return answer
+
+        return parse_handler_output(
+            answer,
+            allow_embedded_json=True,
+        )

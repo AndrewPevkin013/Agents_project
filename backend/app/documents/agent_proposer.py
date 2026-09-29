@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from app.models.model_manager import get_model_manager
 
 
 @dataclass
@@ -71,10 +72,6 @@ class AgentProposer:
         )
 
         self._gigachat_client = None
-
-        self._local_tokenizer = None
-        self._local_model = None
-        self._local_device = None
 
     def propose(
         self,
@@ -231,11 +228,15 @@ Rules:
         )
 
     def _generate_local(
-        self,
-        prompt: str,
-    ) -> str:
+    self,
+    prompt: str,
+) -> str:
 
-        self._ensure_local_model()
+        runtime = self._get_local_runtime()
+
+        tokenizer = runtime.tokenizer
+        model = runtime.model
+        device = runtime.device
 
         messages = [
             {
@@ -250,10 +251,6 @@ Rules:
                 "content": prompt,
             },
         ]
-
-        tokenizer = self._local_tokenizer
-        model = self._local_model
-        device = self._local_device
 
         if hasattr(
             tokenizer,
@@ -294,21 +291,8 @@ Rules:
             skip_special_tokens=True,
         ).strip()
 
-    def _ensure_local_model(self) -> None:
 
-        if (
-            self._local_tokenizer is not None
-            and self._local_model is not None
-        ):
-            return
-
-        import torch
-
-        from transformers import (
-            AutoModelForCausalLM,
-            AutoTokenizer,
-        )
-
+    def _get_local_runtime(self):
         model_path_env = os.getenv(
             "AGENT_PROPOSER_MODEL_PATH",
             "",
@@ -318,16 +302,23 @@ Rules:
             model_path = Path(model_path_env)
 
         else:
-            model_name = os.getenv(
-                "AGENT_PROPOSER_MODEL_NAME",
-                "",
-            ).strip()
+            model_name = (
+                os.getenv(
+                    "AGENT_PROPOSER_MODEL_NAME",
+                    "",
+                ).strip()
+                or os.getenv(
+                    "DEFAULT_AGENT_MODEL",
+                    "",
+                ).strip()
+            )
 
             if not model_name:
                 raise RuntimeError(
                     "Local AgentProposer requires "
-                    "AGENT_PROPOSER_MODEL_PATH or "
-                    "AGENT_PROPOSER_MODEL_NAME."
+                    "AGENT_PROPOSER_MODEL_PATH, "
+                    "AGENT_PROPOSER_MODEL_NAME, or "
+                    "DEFAULT_AGENT_MODEL."
                 )
 
             if self.models_dir is None:
@@ -349,46 +340,31 @@ Rules:
 
         device = os.getenv(
             "AGENT_PROPOSER_DEVICE",
-            "cpu",
+            os.getenv(
+                "AGENT_DEVICE",
+                os.getenv(
+                    "HANDLER_DEVICE",
+                    "cpu",
+                ),
+            ),
         )
 
-        dtype_name = os.getenv(
+        torch_dtype = os.getenv(
             "AGENT_PROPOSER_TORCH_DTYPE",
-            "float32",
+            os.getenv(
+                "AGENT_TORCH_DTYPE",
+                os.getenv(
+                    "HANDLER_TORCH_DTYPE",
+                    "float32",
+                ),
+            ),
         )
 
-        dtype_map = {
-            "float32": torch.float32,
-            "float16": torch.float16,
-            "bfloat16": torch.bfloat16,
-        }
-
-        torch_dtype = dtype_map.get(
-            dtype_name,
-            torch.float32,
+        return get_model_manager().get_runtime(
+            model_path=str(model_path),
+            device=device,
+            torch_dtype=torch_dtype,
         )
-
-        self._local_tokenizer = (
-            AutoTokenizer.from_pretrained(
-                model_path,
-                local_files_only=True,
-                trust_remote_code=True,
-            )
-        )
-
-        self._local_model = (
-            AutoModelForCausalLM.from_pretrained(
-                model_path,
-                local_files_only=True,
-                torch_dtype=torch_dtype,
-                trust_remote_code=True,
-            )
-        )
-
-        self._local_model.to(device)
-        self._local_model.eval()
-
-        self._local_device = device
 
     def _parse_proposal(
         self,

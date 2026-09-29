@@ -1,0 +1,7 @@
+What is the maximum acceptable p95 latency for Atlas API?
+
+How often should the Atlas API health endpoint be checked?
+
+Ask the MedicalDeviceAgent how often the CardioWatch M7 battery capacity should be tested.
+
+Which component is connected to the HMI Panel, and what communication protocol is used?

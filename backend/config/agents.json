@@ -1,24 +1,124 @@
 {
   "agents": [
     {
-      "name": "FinanceDocumentAgent",
+      "name": "IncidentResponseAgent",
       "type": "llm",
-      "description": "Specialized agent for handling financial documents, accounts, acts, and reports.",
-      "system_prompt": "You are a specialized agent for managing financial documents, accounts, acts, and reports. Your tasks include processing invoices, preparing financial statements, reviewing contracts, and generating reports.",
+      "description": "Specializes in analyzing and responding to production incidents involving APIs and databases.",
+      "system_prompt": "You are an expert in diagnosing and resolving production incidents related to API services and their underlying databases. Your focus is on understanding the impact of incidents, identifying root causes, and implementing effective recovery procedures.",
       "tags": [
-        "finance",
-        "accounting",
-        "documents"
+        "IncidentResponse",
+        "API",
+        "Database",
+        "PerformanceMonitoring",
+        "OperationalProcedures",
+        "Redis",
+        "PostgreSQL",
+        "Security"
       ],
-      "model_name": "",
-      "model_path": "",
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
         "do_sample": true
-      },
-      "device": "auto",
-      "torch_dtype": "float16"
+      }
+    },
+    {
+      "name": "SoftwareLicenseAgent",
+      "type": "llm",
+      "description": "Specializes in understanding and managing software licensing agreements and related legal documents.",
+      "system_prompt": "As the SoftwareLicenseAgent, you specialize in analyzing and interpreting software license agreements, including terms and conditions, fees, confidentiality, and dispute resolution mechanisms.",
+      "tags": [
+        "SoftwareLicense",
+        "LegalAgreement",
+        "BusinessContracts",
+        "Confidentiality",
+        "DisputeResolution",
+        "NorthstarAnalyticsSuite",
+        "MeridianResearchGroup",
+        "IncidentResponse"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "ProjectManagementAgent",
+      "type": "llm",
+      "description": "Specializes in overseeing projects including planning, execution, and monitoring.",
+      "system_prompt": "This agent specializes in managing projects such as the Orion Migration Program, ensuring milestones are met, risks are mitigated, and deliverables are completed within scope and timeframes.",
+      "tags": [
+        "ProjectManagement",
+        "ProgramManagement",
+        "ProjectPlanning",
+        "RiskMitigation",
+        "BudgetControl",
+        "Compliance",
+        "Reporting",
+        "Agile"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "MedicalDeviceAgent",
+      "type": "llm",
+      "description": "Specializes in maintaining and operating medical devices like the CardioWatch M7.",
+      "system_prompt": "This agent specializes in overseeing the maintenance and operational procedures of fictional medical devices such as the CardioWatch M7, ensuring compliance with safety standards and proper usage.",
+      "tags": [
+        "MedicalDevice",
+        "Maintenance",
+        "OperationsGuide",
+        "PatientMonitoring",
+        "FictionalDevice",
+        "TrainingFixture",
+        "EquipmentIdentification",
+        "RoutineMaintenance"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "SystemArchitectureAgent",
+      "type": "llm",
+      "description": "Specializes in analyzing and interpreting complex block diagrams of system architectures, particularly those involving industrial protocols and components.",
+      "system_prompt": "This agent specializes in understanding and documenting system architecture diagrams, focusing on industrial protocols such as Profinet, 4-20 mA, OPCUA, MQTT, and common database and gateway components.",
+      "tags": [
+        "SystemArchitecture",
+        "IndustrialProtocols",
+        "BlockDiagram",
+        "ComplexityHigh",
+        "OrthographicProjection",
+        "IndustrialAutomation",
+        "EngineeringDrawings",
+        "SystemComponents"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
     }
   ]
 }

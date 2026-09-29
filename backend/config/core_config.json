@@ -2,23 +2,20 @@
   "handler": {
     "provider": "local"
   },
-
   "providers": {
     "local": {
-      "model_name": "Qwen2.5-3B-Instruct",
-      "device": "cpu",
-      "torch_dtype": "float32",
+      "model_name": "Qwen2.5-7B-Instruct",
+      "device": "auto",
+      "torch_dtype": "bfloat16",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.2,
         "do_sample": false
       }
     },
-
     "gigachat": {
       "model": "GigaChat-2-Pro"
     },
-
     "rules": {}
   }
 }

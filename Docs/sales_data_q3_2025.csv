@@ -1,0 +1,21 @@
+date,product,region,sales_rep,units_sold,revenue_usd,cost_usd,margin_pct
+2025-07-01,ProductA,North America,Alice Johnson,42,189000,72000,61.9
+2025-07-03,ProductB,Europe,Hans Mueller,18,81000,34000,58.0
+2025-07-07,ProductA,Asia Pacific,Yuki Tanaka,31,139500,53000,62.0
+2025-07-12,ProductC,North America,Bob Smith,9,54000,23000,57.4
+2025-07-15,ProductB,Europe,Marie Dupont,24,108000,45000,58.3
+2025-07-19,ProductA,Middle East,Amir Hassan,15,67500,26000,61.5
+2025-07-22,ProductC,Asia Pacific,Yuki Tanaka,12,72000,30000,58.3
+2025-07-28,ProductB,North America,Alice Johnson,33,148500,62000,58.2
+2025-08-04,ProductA,Europe,Hans Mueller,28,126000,48000,61.9
+2025-08-09,ProductC,Europe,Marie Dupont,21,126000,53000,57.9
+2025-08-14,ProductB,Asia Pacific,Kenji Sato,19,85500,36000,57.9
+2025-08-19,ProductA,North America,Bob Smith,47,211500,81000,61.7
+2025-08-23,ProductC,Middle East,Amir Hassan,8,48000,20000,58.3
+2025-08-28,ProductB,Europe,Hans Mueller,29,130500,55000,57.9
+2025-09-03,ProductA,Asia Pacific,Yuki Tanaka,36,162000,62000,61.7
+2025-09-09,ProductC,North America,Alice Johnson,14,84000,35000,58.3
+2025-09-15,ProductB,Middle East,Amir Hassan,11,49500,21000,57.6
+2025-09-21,ProductA,Europe,Marie Dupont,39,175500,67000,61.8
+2025-09-26,ProductC,Asia Pacific,Kenji Sato,17,102000,43000,57.8
+2025-09-30,ProductB,North America,Bob Smith,41,184500,77000,58.3

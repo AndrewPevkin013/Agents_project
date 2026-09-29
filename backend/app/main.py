@@ -5,7 +5,7 @@ from fastapi import UploadFile, File, Form
 import shutil
 from dotenv import load_dotenv
 import json
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.engine.agent_executor import AgentExecutor
 from app.engine.agent_registry import AgentRegistry
 from app.engine.command_router import CommandRouter
@@ -52,7 +52,12 @@ core_config = json.loads(
 
 class AgentRequest(BaseModel):
     prompt: str
-    context: Dict[str, Any] = {}
+    context: Dict[str, Any] = Field(
+        default_factory=dict
+    )
+    rag_enabled: bool = True
+    rag_top_k: int = 5
+    rag_rerank_top_k: int = 3
 class AgentCreateRequest(BaseModel):
     name: str
     model_name: str = ""
@@ -65,6 +70,11 @@ class DocumentRouteRequest(BaseModel):
     file_path: str
     document_text: str = ""
     threshold: int = 1
+
+class RetrieveRequest(BaseModel):
+    query: str
+    top_k: int = 5
+    rerank_top_k: int = 3
 
 app = FastAPI(title="Multi-Agent MVP")
 registry = AgentRegistry(config_path=AGENTS_CONFIG, models_dir=MODELS_DIR)
@@ -132,11 +142,23 @@ def run_agent(
 ):
     return router.route_by_agent_name(
         agent_name,
-        {
-            "prompt": request.prompt,
-            "context": request.context,
-        },
+        request.model_dump(),
     )
+
+
+@app.post("/agents/{agent_name}/retrieve")
+def retrieve_agent_memory(
+    agent_name: str,
+    request: RetrieveRequest,
+    user: dict = Depends(get_current_user),
+):
+    return executor.execute({
+        "action": "retrieve",
+        "agent": agent_name,
+        "query": request.query,
+        "top_k": request.top_k,
+        "rerank_top_k": request.rerank_top_k,
+    })
 
 
 @app.post("/handler")

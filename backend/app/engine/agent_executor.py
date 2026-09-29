@@ -35,7 +35,7 @@ class AgentExecutor:
         action = command.get("action")
         if not action:
             raise ValueError("Command must contain 'action' or legacy 'type'")
-        handlers = {"extract": self._extract, "create_agent": self._create_agent, "delete_agent": self._delete_agent, "save_system_state": self._save_system_state, "remove": self._delete_agent, "edit_agent": self._edit_agent, "cancel": self._cancel, "list_agents": self._list_agents, "add": self._add, "delete": self._delete_data, "edit": self._edit, "load": self._load, "route_document": self._route_document, "resolve_logger_conflicts": self._resolve_logger_conflicts, "consolidate": self._consolidate, "split": self._split, "no_action": self._no_action}
+        handlers = {"extract": self._extract, "create_agent": self._create_agent, "delete_agent": self._delete_agent, "save_system_state": self._save_system_state, "remove": self._delete_agent, "edit_agent": self._edit_agent, "cancel": self._cancel, "list_agents": self._list_agents, "add": self._add, "delete": self._delete_data, "edit": self._edit, "load": self._load, "retrieve": self._retrieve, "route_document": self._route_document, "resolve_logger_conflicts": self._resolve_logger_conflicts, "consolidate": self._consolidate, "split": self._split, "no_action": self._no_action}
         if action not in handlers:
             raise ValueError(f"Unsupported action: {action}")
         return handlers[action](command)
@@ -53,8 +53,7 @@ class AgentExecutor:
         if not isinstance(payload, dict):
             raise TypeError("Command payload must be a JSON object")
 
-        prompt = payload.get("prompt") or payload.get("task") or payload.get("query") or ""
-        return self._run_agent_with_metrics(agent_name, prompt)
+        return self._run_agent_with_metrics(agent_name, payload)
 
     def _extract(self, command: Dict[str, Any]) -> Dict[str, Any]:
         agents = command.get("agents", [])
@@ -64,7 +63,12 @@ class AgentExecutor:
 
         for agent_name in agents:
             prompt = prompts.get(agent_name, "")
-            answers[agent_name] = self._run_agent_with_metrics(agent_name, prompt)
+            answers[agent_name] = self._run_agent_with_metrics(
+                agent_name,
+                {
+                    "prompt": prompt,
+                },
+            )
 
         return {
             "action": "extract",
@@ -107,15 +111,7 @@ class AgentExecutor:
                     "temperature": 0.7,
                     "do_sample": True,
                 },
-            ),
-            "device": command.get(
-                "device",
-                "auto",
-            ),
-            "torch_dtype": command.get(
-                "torch_dtype",
-                "float16",
-            ),
+            )
         }
 
         self.registry.upsert_from_metadata(metadata)
@@ -141,7 +137,7 @@ class AgentExecutor:
 
     def _edit_agent(self, command: Dict[str, Any]) -> Dict[str, Any]:
         agent_name = command["agent"]
-        updates = {"description": command.get("description"), "system_prompt": command.get("system_prompt"), "tags": command.get("tags"), "model_name": command.get("model_name"), "model_path": command.get("model_path"), "generation": command.get("generation"), "device": command.get("device"), "torch_dtype": command.get("torch_dtype")}
+        updates = {"description": command.get("description"), "system_prompt": command.get("system_prompt"), "tags": command.get("tags"), "model_name": command.get("model_name"), "model_path": command.get("model_path"), "generation": command.get("generation"),}
         metadata = self.registry.update_metadata(agent_name, updates)
         return {"action": "edit_agent", "status": "ok", "agent": agent_name, "metadata": metadata}
 
@@ -160,9 +156,21 @@ class AgentExecutor:
         agent_name = command["agent"]
         file_path = command.get("file_path", "")
 
+        document_processing = command.get(
+            "document_processing",
+            {},
+        )
+
+        processed_text = document_processing.get(
+            "routing_text",
+            "",
+        )
+
         loaded_document = self.document_loader.load(
             file_path=file_path,
-            agent_name=agent_name
+            agent_name=agent_name,
+            document_text=processed_text,
+            document_processing=document_processing,
         )
 
         agent = self.registry.get(agent_name)
@@ -174,6 +182,8 @@ class AgentExecutor:
             "saved_path": loaded_document["saved_path"],
             "chunks_count": loaded_document["chunks_count"],
             "chars": loaded_document["chars"],
+            "chunks": loaded_document["chunks"],
+            "document_processing": document_processing,
         })
 
         return {
@@ -243,17 +253,22 @@ class AgentExecutor:
     def _run_agent_with_metrics(
         self,
         agent_name: str,
-        prompt: str,
+        payload: Dict[str, Any],
     ) -> Dict[str, Any]:
 
         agent = self.registry.get(agent_name)
 
+        prompt = (
+            payload.get("prompt")
+            or payload.get("task")
+            or payload.get("query")
+            or ""
+        )
+
         started = time.perf_counter()
 
         try:
-            response = agent.run({
-                "prompt": prompt
-            })
+            response = agent.run(payload)
 
         except FileNotFoundError as exc:
             response = {
@@ -294,4 +309,48 @@ class AgentExecutor:
                 "metrics": str(self.metrics_logger.summary_path),
             },
             "metrics": metrics
+        }
+
+    def _retrieve(
+        self,
+        command: Dict[str, Any],
+    ) -> Dict[str, Any]:
+
+        agent_name = command["agent"]
+
+        query = str(
+            command.get("query", "")
+        ).strip()
+
+        if not query:
+            raise ValueError(
+                "Retrieve command requires 'query'"
+            )
+
+        agent = self.registry.get(
+            agent_name
+        )
+
+        results = agent.memory.retrieve(
+            query,
+            top_k=int(
+                command.get("top_k", 5)
+            ),
+            rerank_top_k=int(
+                command.get(
+                    "rerank_top_k",
+                    3,
+                )
+            ),
+        )
+
+        return {
+            "action": "retrieve",
+            "status": "ok",
+            "agent": agent_name,
+            "query": query,
+            "results": [
+                item.to_dict()
+                for item in results
+            ],
         }

@@ -47,6 +47,108 @@ class DocumentProcessor:
             },
         )
 
+    @staticmethod
+    def _pdf_text_document(
+        path: Path,
+    ) -> ProcessedDocument | None:
+        import fitz
+
+        pages = []
+        page_texts = []
+
+        with fitz.open(path) as pdf:
+            for page_index, page in enumerate(
+                pdf,
+                start=1,
+            ):
+                text = page.get_text("text").strip()
+
+                pages.append({
+                    "page": page_index,
+                    "text": text,
+                })
+
+                if text:
+                    page_texts.append(
+                        f"[PDF page {page_index}]\n{text}"
+                    )
+
+        text = "\n\n".join(page_texts).strip()
+
+        if not text:
+            return None
+
+        return ProcessedDocument(
+            source_path=str(path),
+            file_name=path.name,
+            kind="text_pdf",
+            text=text,
+            pages=pages,
+            metadata={
+                "extension": ".pdf",
+                "size_bytes": path.stat().st_size,
+                "page_count": len(pages),
+                "processing_pipeline": "pdf_text",
+                "source_kind": "text_pdf",
+                "extraction_supported": True,
+            },
+        )
+
+    @staticmethod
+    def _docx_text_document(
+        path: Path,
+    ) -> ProcessedDocument:
+        from docx import Document
+
+        doc = Document(path)
+
+        blocks: list[str] = []
+
+        # Paragraphs
+        for paragraph in doc.paragraphs:
+            text = paragraph.text.strip()
+            if text:
+                blocks.append(text)
+
+        # Tables
+        for table_index, table in enumerate(doc.tables, start=1):
+            rows: list[str] = []
+
+            for row in table.rows:
+                cells = [
+                    cell.text.strip().replace("\n", " ")
+                    for cell in row.cells
+                ]
+
+                if any(cells):
+                    rows.append(" | ".join(cells))
+
+            if rows:
+                blocks.append(
+                    f"[DOCX table {table_index}]\n"
+                    + "\n".join(rows)
+                )
+
+        text = "\n\n".join(blocks).strip()
+
+        return ProcessedDocument(
+            source_path=str(path),
+            file_name=path.name,
+            kind="text_docx",
+            text=text,
+            metadata={
+                "extension": ".docx",
+                "size_bytes": path.stat().st_size,
+                "paragraph_count": len(doc.paragraphs),
+                "table_count": len(doc.tables),
+                "processing_pipeline": "docx_text",
+                "source_kind": "text_docx",
+                "extraction_supported": True,
+            },
+        )
+
+    
+
     def process(self, file_path: str, document_text: str = "") -> ProcessedDocument:
         path = Path(file_path)
         if not path.exists():
@@ -55,12 +157,30 @@ class DocumentProcessor:
         suffix = path.suffix.lower()
 
         if suffix in TEXT_EXTENSIONS:
-            return self._text_document(path, document_text)
+            return self._text_document(
+                path,
+                document_text,
+            )
 
-        # IMPORTANT: visual routing is deterministic. The Handler never needs to
-        # understand image contents or choose this pipeline itself.
+        if suffix == ".docx":
+            return self._docx_text_document(
+                path
+            )
+
+        if suffix == ".pdf":
+            pdf_document = self._pdf_text_document(
+                path
+            )
+
+            if pdf_document is not None:
+                return pdf_document
+
+        # IMPORTANT: visual routing is deterministic.
+        # Handler/LLM does not choose the processing pipeline.
         if self.drawing_analyzer.supports(path):
-            return self.drawing_analyzer.analyze(path)
+            return self.drawing_analyzer.analyze(
+                path
+            )
 
         fallback_text = (
             document_text.strip()

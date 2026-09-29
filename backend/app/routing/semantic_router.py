@@ -8,8 +8,10 @@ import numpy as np
 from app.engine.agent_registry import AgentRegistry
 from app.routing.agent_profile import AgentProfile
 from app.routing.chunker import split_into_chunks
-from app.routing.embeddings import EmbeddingService
-
+from app.routing.embeddings import (
+    EmbeddingService,
+    get_embedding_service,
+)
 
 @dataclass
 class RoutingDecision:
@@ -71,12 +73,13 @@ class SemanticAgentRouter:
         margin: float = 0.05,
         rerank_top: int = 3,
         rerank_min: float = 0.30,
+        rerank_margin: float = 0.02,
         learn: bool = False,
     ) -> None:
         self.registry = registry
         self.embedding_service = (
             embedding_service
-            or EmbeddingService()
+            or get_embedding_service()
         )
 
         self.low = low
@@ -84,6 +87,7 @@ class SemanticAgentRouter:
         self.margin = margin
         self.rerank_top = rerank_top
         self.rerank_min = rerank_min
+        self.rerank_margin = rerank_margin
         self.learn = learn
 
         self.profiles: Dict[str, AgentProfile] = {}
@@ -278,6 +282,23 @@ class SemanticAgentRouter:
             rerank_values[winner_index]
         )
 
+        sorted_rerank_values = sorted(
+            (float(value) for value in rerank_values),
+            reverse=True,
+        )
+
+        runner_up_score = (
+            sorted_rerank_values[1]
+            if len(sorted_rerank_values) > 1
+            else None
+        )
+
+        current_rerank_margin = (
+            winner_score - runner_up_score
+            if runner_up_score is not None
+            else float("inf")
+        )
+
         if winner_score < self.rerank_min:
             return RoutingDecision(
                 agent=None,
@@ -285,6 +306,22 @@ class SemanticAgentRouter:
                 reason=(
                     f"reranker {winner_score:.3f} "
                     f"< rerank_min {self.rerank_min:.3f}"
+                ),
+                best_agent=best_agent,
+                best_similarity=best_similarity,
+                margin=current_margin,
+                similarities=similarities,
+                rerank_scores=rerank_scores,
+                chunks=chunks,
+            )
+
+        if current_rerank_margin < self.rerank_margin:
+            return RoutingDecision(
+                agent=None,
+                stage="reranker",
+                reason=(
+                    f"reranker_margin {current_rerank_margin:.4f} "
+                    f"< required {self.rerank_margin:.4f}"
                 ),
                 best_agent=best_agent,
                 best_similarity=best_similarity,

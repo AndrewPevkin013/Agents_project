@@ -76,6 +76,80 @@ class DocumentRouter:
             )
         )
 
+
+    @staticmethod
+    def _normalize_tags(tags: Any) -> set[str]:
+        if not isinstance(tags, (list, tuple, set)):
+            return set()
+
+        return {
+            str(tag).strip().lower()
+            for tag in tags
+            if str(tag).strip()
+        }
+
+
+    def _proposal_matches_existing_domain(
+        self,
+        proposal: AgentProposal,
+        agent_name: str | None,
+    ) -> tuple[bool, Dict[str, Any]]:
+        if not agent_name:
+            return False, {
+                "matched": False,
+                "reason": "no_candidate_agent",
+            }
+
+        try:
+            metadata = self.registry.get_metadata(agent_name)
+        except Exception:
+            return False, {
+                "matched": False,
+                "reason": "candidate_metadata_unavailable",
+                "candidate": agent_name,
+            }
+
+        proposal_tags = self._normalize_tags(
+            proposal.tags
+        )
+
+        existing_tags = self._normalize_tags(
+            metadata.get("tags", [])
+        )
+
+        overlap = proposal_tags & existing_tags
+
+        denominator = max(
+            1,
+            min(
+                len(proposal_tags),
+                len(existing_tags),
+            ),
+        )
+
+        overlap_ratio = (
+            len(overlap) / denominator
+        )
+
+        matched = (
+            bool(overlap)
+            and overlap_ratio >= 0.5
+        )
+
+        return matched, {
+            "matched": matched,
+            "candidate": agent_name,
+            "proposal_tags": sorted(proposal_tags),
+            "existing_tags": sorted(existing_tags),
+            "overlap": sorted(overlap),
+            "overlap_ratio": overlap_ratio,
+            "reason": (
+                "domain_tags_compatible"
+                if matched
+                else "domain_tags_incompatible"
+            ),
+        }
+
     def process_document(
         self,
         file_path: str,
@@ -111,6 +185,9 @@ class DocumentRouter:
 
             "normalized_path":
                 normalized_path,
+
+            "routing_text":
+                routing_text,
 
             "tags":
                 processed.tags,
@@ -240,7 +317,17 @@ class DocumentRouter:
             )
         )
 
-        if proposal_decision.matched:
+        domain_match, domain_check = (
+            self._proposal_matches_existing_domain(
+                proposal,
+                proposal_decision.agent,
+            )
+        )
+
+        if (
+            proposal_decision.matched
+            and domain_match
+        ):
             return [
                 {
                     "action": "load",
@@ -254,6 +341,8 @@ class DocumentRouter:
                         proposal.to_dict(),
                     "proposal_recheck":
                         proposal_decision.to_dict(),
+                    "proposal_domain_check":
+                        domain_check,
                     "document_processing":
                         processing_info,
                 }
@@ -284,6 +373,8 @@ class DocumentRouter:
                         proposal.to_dict(),
                     "proposal_recheck":
                         proposal_decision.to_dict(),
+                    "proposal_domain_check":
+                        domain_check,
                     "document_processing":
                         processing_info,
                 }
