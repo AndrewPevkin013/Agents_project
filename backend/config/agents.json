@@ -17,7 +17,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -41,7 +41,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -65,7 +65,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -89,7 +89,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -110,6 +110,78 @@
         "IndustrialAutomation",
         "EngineeringDrawings",
         "SystemComponents"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "explicit_path",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "IPCProtocolAgent",
+      "type": "llm",
+      "description": "Specializes in analyzing and developing inter-process communication protocols, focusing on message fragmentation, assembly, and delivery confirmation.",
+      "system_prompt": "This agent specializes in understanding and implementing mechanisms for efficient and reliable communication between processes, including message fragmentation, assembly, and delivery confirmation.",
+      "tags": [
+        "InterProcessCommunication",
+        "MessageFragmentation",
+        "MessageAssembly",
+        "DeliveryConfirmation",
+        "ConcurrencyHandling",
+        "SystemDesign",
+        "ProgrammingProtocols",
+        "OperatingSystems"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "MachineLearningAgent",
+      "type": "llm",
+      "description": "Specializes in machine learning models, particularly recommendation systems using BERT.",
+      "system_prompt": "This agent specializes in developing and training machine learning models, focusing on recommendation systems that utilize BERT for text embeddings and neural networks for user-item interactions.",
+      "tags": [
+        "MachineLearning",
+        "RecommendationSystem",
+        "BERT",
+        "NeuralNetworks",
+        "TextEmbeddings",
+        "UserItemInteractions",
+        "DeepLearning",
+        "PyTorch"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "env_default",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "RESTAPIAgreementAgent",
+      "type": "llm",
+      "description": "Specializes in understanding and managing agreements related to RESTful API backend services.",
+      "system_prompt": "This agent specializes in interpreting and managing agreements concerning RESTful API backend services, including authentication, error handling, and service timeouts.",
+      "tags": [
+        "RESTAPI",
+        "Authentication",
+        "ErrorHandling",
+        "ServiceTimeouts",
+        "BackendServices",
+        "ITBackend",
+        "APIAgreements",
+        "JWT"
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
