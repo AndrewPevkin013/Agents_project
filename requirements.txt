@@ -9,6 +9,7 @@ sentencepiece
 protobuf
 
 pytest
+pytest-asyncio>=1.0,<2.0
 python-multipart
 python-dotenv
 
