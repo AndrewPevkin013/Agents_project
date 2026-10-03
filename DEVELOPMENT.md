@@ -24,6 +24,7 @@ cd Agents_project
 Copy-Item .env.example .env
 ```
 
+
 Сгенерировать JWT secret:
 
 ``` powershell
