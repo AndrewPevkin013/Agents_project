@@ -44,7 +44,7 @@ Qt Desktop Client
                          +------> llama.cpp server
 ```
 
-Подробности: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Подробности: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Структура репозитория
 
@@ -61,7 +61,7 @@ Qt Desktop Client
 ```
 
 Подробное назначение директорий и ключевых файлов:
-[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
+[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
 
 ## Основные сервисы
 
@@ -167,7 +167,7 @@ cmake --build build --config Release
 
 Для Windows deployment Qt DLL может потребоваться `windeployqt`.
 
-Подробнее: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+Подробнее: [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Основной пользовательский сценарий
 

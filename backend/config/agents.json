@@ -137,7 +137,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -161,7 +161,7 @@
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
-      "model_assignment": "env_default",
+      "model_assignment": "explicit_path",
       "generation": {
         "max_new_tokens": 256,
         "temperature": 0.7,
@@ -182,6 +182,30 @@
         "ITBackend",
         "APIAgreements",
         "JWT"
+      ],
+      "model_name": "Qwen2.5-3B-Instruct",
+      "model_path": "/project/models/Qwen2.5-3B-Instruct",
+      "model_assignment": "explicit_path",
+      "generation": {
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "do_sample": true
+      }
+    },
+    {
+      "name": "EvaluationAgent",
+      "type": "llm",
+      "description": "Specializes in evaluating test results and providing feedback based on performance metrics.",
+      "system_prompt": "This agent specializes in analyzing test outcomes, providing detailed evaluations, and offering actionable recommendations.",
+      "tags": [
+        "Evaluation",
+        "Feedback",
+        "PerformanceMetrics",
+        "QualityAssurance",
+        "TestResults",
+        "ImprovementSuggestion",
+        "DocumentationReview",
+        "TechnicalAnalysis"
       ],
       "model_name": "Qwen2.5-3B-Instruct",
       "model_path": "/project/models/Qwen2.5-3B-Instruct",
